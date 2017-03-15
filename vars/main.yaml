@@ -3,3 +3,4 @@
 nvm_install_dir:  '/opt/nvm'
 node_path:        '/usr/local/node'
 nvm_path:         '/usr/local/nvm'
+nvm_group:        'nvm'

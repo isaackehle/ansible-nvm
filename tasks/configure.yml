@@ -1,7 +1,7 @@
 ---
 
-- debug:  var=nvm
-- debug:  var=ansible_env
+#- debug:  var=nvm
+#- debug:  var=ansible_env
 
 - name:   Install the selected node version
   become: true

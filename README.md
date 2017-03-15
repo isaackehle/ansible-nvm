@@ -6,7 +6,13 @@ Available on Ansible Galaxy: [pgkehle.nvm](https://galaxy.ansible.com/pgkehle/nv
 
 ## Variables
 ```yaml
-deploy_dir:     Required for where the base path lives
+do_init:            Downloads the nvm project and installs it globally
+do_configure:       Runs the configure scripts to install and change the default type
+vm_client_type:     When set to `gui`, node will be allowed to open ports as non-root
+
+nvm:
+  type:   "node"    `node`, `iojs`, etc
+  ver:    "7.7.1"   version to install
 ```
 
 ## Tags
@@ -28,14 +34,15 @@ deploy_dir:     Required for where the base path lives
         ver:                "7.7.1"
 
     roles:
-      - { role: pgkehle.nvm, do_init: true }
-      - { role: pgkehle.nvm, do_configure: true }
+      - { role: pgkehle.nvm, do_init: true }        # Install the nvm script to the server
+      - { role: pgkehle.nvm, do_configure: true }   # Configure nvm to use the version/type in the nvm variable 
 ```
 
 ## Noteworthy
 
 This playbook modifies /etc/environment by adding a PATH definition to the end, which effectively overwrites the default set by the system.
-Also, the two directories created in /usr/local, `nvm_path` and `node_path` are set with group ownership of `admin`.  Ensure your user has this group.
+Also, the two directories created in /usr/local, `nvm_path` and `node_path` are set with group ownership of `nvm`.  This group is created and 
+assigned to the ansible user. 
 
 ## License
 

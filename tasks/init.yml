@@ -12,6 +12,24 @@
     - libssl-dev
     - curl
 
+- name: Test groups
+  shell: cat /etc/group
+  register: groups_result
+
+- name: Add group
+  shell: groupadd "{{nvm_group}}"
+  become: true
+  when: "{{ groups_result.stdout.find(nvm_group) }} == -1"
+
+- name: Test user groups
+  shell: groups
+  register: user_groups_result
+
+- name: Add group to user
+  shell: usermod -G "{{nvm_group}}" -a "{{ ansible_user }}"
+  become: true
+  when: "{{ user_groups_result.stdout.find(nvm_group) }} == -1"
+
 - name: Clone nvm into place
   shell: git clone https://github.com/creationix/nvm.git {{nvm_install_dir}}
   args:
@@ -26,7 +44,7 @@
     state: directory
     mode: 0775
     owner: root
-    group: admin
+    group: "{{nvm_group}}"
   with_items:
     - "{{node_path}}"
     - "{{nvm_path}}"

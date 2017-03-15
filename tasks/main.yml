@@ -6,4 +6,8 @@
 
 - include: ./configure.yml
   when: do_configure == true
-  tags: [ 'install', 'configure' ]
+  tags: [ 'init', 'configure' ]
+
+- include: ./port_enable.yml
+  when: (do_configure == true) and (vm_client_type == 'gui')
+  tags: [ 'init', 'configure' ]
