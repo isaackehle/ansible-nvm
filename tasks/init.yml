@@ -1,0 +1,45 @@
+---
+
+- name: Add required packages
+  become: true
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - build-essential
+    - git
+    - openssl
+    - libssl-dev
+    - curl
+  tags: [ 'install' ]
+
+- name: Clone nvm into place
+  shell: git clone https://github.com/creationix/nvm.git {{nvm_install_dir}}
+  args:
+    creates: "{{nvm_install_dir}}/nvm.sh"
+  become: true
+#  when: nvm_stat.stat.exists != true
+  tags: [ 'install' ]
+
+- name: Make global directories
+  become: true
+  file:
+    path: "{{item}}"
+    state: directory
+    mode: 0775
+    owner: root
+    group: root
+  with_items:
+    - /usr/local/nvm
+    - /usr/local/node
+  tags: [ 'install' ]
+
+- name: Add /etc/profile.d/nvm.sh
+  become: true
+  copy:
+    src: ../templates/nvm.sh
+    dest: /etc/profile.d/nvm.sh
+    mode: 0644
+    owner: root
+    group: root
+  tags: [ 'install' ]
