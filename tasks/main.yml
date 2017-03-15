@@ -1,0 +1,17 @@
+---
+
+- name: Add packages exist
+  become: true
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - build-essential
+    - git
+    - openssl
+    - libssl-dev
+    - curl
+
+- name: Clone nvm into place
+  shell: git clone https://github.com/creationix/nvm.git /opt/nvm
+  become: true
