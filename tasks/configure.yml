@@ -1,0 +1,14 @@
+---
+
+- debug:  var=nvm
+- debug:  var=ansible_env
+
+- name:   Install the selected node version
+  become: true
+  shell:  "bash -c '. {{ansible_env.NVM_SCRIPT}}; nvm install {{nvm.ver}}'"
+
+- name:   Set the default alias
+  become: true
+  shell:  "bash -c '. {{ansible_env.NVM_SCRIPT}}; nvm alias default {{nvm.ver}}'"
+
+

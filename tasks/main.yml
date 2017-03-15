@@ -1,5 +1,9 @@
 ---
 
 - include: ./init.yml
-  when: do_install == true
-  tags: [ 'init', 'install' ]
+  when: do_init == true
+  tags: [ 'init' ]
+
+- include: ./configure.yml
+  when: do_configure == true
+  tags: [ 'install', 'configure' ]

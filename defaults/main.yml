@@ -1,3 +1,8 @@
 ---
 
-do_install:     false
+do_init:        false
+do_configure:   false
+
+nvm:
+  type:         "node"
+  ver:          "7.7.1"

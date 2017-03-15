@@ -14,8 +14,7 @@ deploy_dir:     Required for where the base path lives
 ```YAML
   tags:
     - install
-    - packages
-    - upgrade
+    - configure
 ```
 
 ## Examples
@@ -24,10 +23,19 @@ deploy_dir:     Required for where the base path lives
 
   - hosts: all  
     vars:
+      nvm:
+        type:               "node"
+        ver:                "7.7.1"
 
     roles:
-      - { role: pgkehle.nvm }
+      - { role: pgkehle.nvm, do_init: true }
+      - { role: pgkehle.nvm, do_configure: true }
 ```
+
+## Noteworthy
+
+This playbook modifies /etc/environment by adding a PATH definition to the end, which effectively overwrites the default set by the system.
+Also, the two directories created in /usr/local, `nvm_path` and `node_path` are set with group ownership of `admin`.  Ensure your user has this group.
 
 ## License
 
