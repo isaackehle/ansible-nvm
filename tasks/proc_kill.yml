@@ -2,7 +2,6 @@
 
 - name: Get pm2 location
   shell: which pm2
-  tags: [ 'always' ]
   failed_when: pm2_loc.rc > 1
   register: pm2_loc
 

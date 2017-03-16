@@ -11,15 +11,13 @@ The configured version of node/npm are linked into `/usr/local/bin`.
 ## Tags and Variables
 
 ```YAML
-tags:
-  - init
-  - configure
-
 vars: 
   flags:
     - init            # Downloads the nvm project and installs it globally
     - configure       # Runs the configure scripts to install and change the default type
     - packages        # Installed global packages using npm
+    - restart         # Restart the node process(es) 
+    - processes       # Handle configuration of the process(es) on reboot
 
   vm_client_type:     # When set to `gui`, node will be allowed to open ports as non-root
                       # When set to `worker` or `scheduler`, tunnels will be auto stopped
@@ -43,6 +41,17 @@ vars:
     - { role: pgkehle.nvm, flags: ['configure'] }   # Configure nvm to use the version/type in the nvm variable 
     - { role: pgkehle.nvm, flags: ['packages'] }    # Install global packages 
 ```
+
+```bash
+export nvm="'nvm': {'type':'node', 'ver': '7.7.1'}"
+export deploy="'deploy_dir': '/opt/servers/node'"
+
+ansible-playbook playbooks/nvm.yml -e "{'flags': ['init']}" -t init
+ansible-playbook playbooks/nvm.yml -e "{'flags': ['configure'], ${nvm}}" -t configure
+ansible-playbook playbooks/nvm.yml -e "{'flags': ['packages'], ${deploy}}" -t packages
+ansible-playbook playbooks/nvm.yml -e "{'flags': ['pm2'], ${deploy}}" -t pm2
+```
+
 
 ## License
 

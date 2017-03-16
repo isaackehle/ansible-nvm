@@ -1,40 +1,31 @@
 ---
 
 - include: ./prep.yml
-  tags: [ 'always' ]
 
 - include: ./proc_stop.yml
-  tags: ['init', 'configure', 'upgrade', 'packages', 'pm2' ]
+  when: ((['init', 'processes'] | intersect(flags)) | length > 0)
 
 - include: ./init.yml
-  when: "'init' in flags"
-  tags: [ 'init' ]
+  when: ((['init'] | intersect(flags)) | length > 0)
 
 - include: ./configure.yml
-  when: "'configure' in flags"
-  tags: [ 'configure' ]
+  when: ((['configure'] | intersect(flags)) | length > 0)
 
 - include: ./port_enable.yml
-  when: "'configure' in flags and vm_client_type == 'gui'"
-  tags: [ 'configure' ]
+  when: ((['configure'] | intersect(flags)) | length > 0) and vm_client_type == 'gui'
 
 - include: ./package_install.yml
-  when: "'packages' in flags"
-  tags: [ 'configure', 'packages' ]
+  when: ((['configure'] | intersect(flags)) | length > 0)
 
 - include: ./package_upgrade.yml
-  when: "'packages' in flags"
-  tags: [ 'upgrade', 'packages' ]
+  when: ((['upgrade'] | intersect(flags)) | length > 0)
 
 - include: ./proc_stop.yml
-  tags: ['init', 'configure', 'upgrade', 'packages', 'pm2' ]
-  when: deploy_dir is defined and deploy_dir != ''
+  when: ((['restart', 'processes', 'upgrade'] | intersect(flags)) | length > 0) and (deploy_dir is defined and deploy_dir != '')
 
 - include: ./proc_start.yml
-  tags: ['init', 'configure', 'upgrade', 'packages', 'pm2' ]
-  when: deploy_dir is defined and deploy_dir != ''
+  when: ((['restart', 'processes', 'upgrade'] | intersect(flags)) | length > 0) and (deploy_dir is defined and deploy_dir != '')
 
 - include: ./proc_auto_start.yml
-  tags: ['configure', 'upgrade', 'packages', 'pm2' ]
-  when: deploy_dir is defined and deploy_dir != ''
+  when: ((['processes', 'upgrade'] | intersect(flags)) | length > 0) and (deploy_dir is defined and deploy_dir != '')
 

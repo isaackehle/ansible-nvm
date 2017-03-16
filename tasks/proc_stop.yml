@@ -2,7 +2,6 @@
 
 - name: Get pm2 location
   shell: which pm2
-  tags: [ 'always' ]
   failed_when: pm2_loc.rc > 1
   register: pm2_loc
 
@@ -12,7 +11,6 @@
     chdir: "{{ deploy_dir }}"
   register: npm_stop
   failed_when: npm_stop.rc > 1
-  tags: ['init', 'configure', 'upgrade', 'packages' ]
   when: deploy_dir is defined and deploy_dir != ''
 
 - name: kill tunnels
