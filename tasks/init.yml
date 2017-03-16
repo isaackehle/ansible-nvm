@@ -1,6 +1,6 @@
 ---
 
-- name: Add required packages
+- name: Install required system packages
   become: true
   apt:
     name: "{{ item }}"
@@ -12,11 +12,11 @@
     - libssl-dev
     - curl
 
-- name: Test groups
+- name: Test system groups
   shell: cat /etc/group
   register: groups_result
 
-- name: Add group
+- name: Add system group if needed
   shell: groupadd "{{nvm_group}}"
   become: true
   when: "{{ groups_result.stdout.find(nvm_group) }} == -1"
@@ -25,7 +25,7 @@
   shell: groups
   register: user_groups_result
 
-- name: Add group to user
+- name: Add group to user if needed
   shell: usermod -G "{{nvm_group}}" -a "{{ ansible_user }}"
   become: true
   when: "{{ user_groups_result.stdout.find(nvm_group) }} == -1"
