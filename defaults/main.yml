@@ -1,7 +1,7 @@
 ---
 
-do_init:        false
-do_configure:   false
+flags:
+  - none
 
 nvm:
   type:         "node"

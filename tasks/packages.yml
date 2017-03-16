@@ -1,0 +1,27 @@
+---
+
+- name: Install NPM global packages (All)
+  become: true
+  shell: "bash -c '. {{ansible_env.NVM_SCRIPT}}; npm install -g {{item}}'"
+  with_items: "{{global_pkgs.all}}"
+  tags: [ 'configure' ]
+
+- name: Install NPM global packages (GUI)
+  become: true
+  shell: "bash -c '. {{ansible_env.NVM_SCRIPT}}; npm install -g {{item}}'"
+  when: (vm_client_type == 'gui')
+  with_items: "{{global_pkgs.gui}}"
+  tags: [ 'configure' ]
+
+- name: Upgrade NPM global packages (All)
+  become: true
+  shell: "bash -c '. {{ansible_env.NVM_SCRIPT}}; npm upgrade -g {{item}}'"
+  with_items: "{{global_pkgs.all}}"
+  tags: [ 'upgrade' ]
+
+- name: Upgrade NPM global packages (GUI)
+  become: true
+  shell: "bash -c '. {{ansible_env.NVM_SCRIPT}}; npm upgrade -g {{item}}'"
+  when: (vm_client_type == 'gui')
+  with_items: "{{global_pkgs.gui}}"
+  tags: [ 'upgrade' ]

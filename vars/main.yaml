@@ -4,3 +4,11 @@ nvm_install_dir:  '/opt/nvm'
 node_path:        '/usr/local/node'
 nvm_path:         '/usr/local/nvm'
 nvm_group:        'nvm'
+
+global_pkgs:
+  all:
+    - pm2
+    - pm2-logrotate
+    - pmx
+  gui:
+    - bower

@@ -11,4 +11,12 @@
   become: true
   shell:  "bash -c '. {{ansible_env.NVM_SCRIPT}}; nvm alias default {{nvm.ver}}'"
 
-
+- name:   Link the executable files for all users
+  become: true
+  file:
+    src:  "{{ nvm_path }}/versions/{{nvm.type}}/v{{nvm.ver}}/bin/{{ item }}"
+    dest: "/usr/local/bin/{{ item }}"
+    state: link
+  with_items:
+    - node
+    - npm

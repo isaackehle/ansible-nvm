@@ -55,20 +55,11 @@
     dest: "/etc/environment"
     block: |
       export NVM_DIR={{nvm_path}}
-      #export NPM_CONFIG_PREFIX={{node_path}}
       export NODE_PATH={{node_path}}
       export NVM_SCRIPT={{nvm_install_dir}}/nvm.sh
       source {{nvm_install_dir}}/nvm.sh
     marker: "# {mark} ANSIBLE MANAGED BLOCK - NVM"
     insertbefore: EOL
-
-- name: Update path variable in /etc/environment
-  become: true
-  lineinfile:
-    dest: /etc/environment
-    state: present
-    regexp: '^PATH="{{node_path}}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games"'
-    line: 'PATH="{{node_path}}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games"'
 
 - name: Add /etc/profile.d/nvm.sh
   become: true

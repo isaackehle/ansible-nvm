@@ -1,13 +1,19 @@
 ---
 
+- debug: var=flags
+  tags: [ 'always' ]
+
 - include: ./init.yml
-  when: do_init == true
+  when: "'init' in flags"
   tags: [ 'init' ]
 
 - include: ./configure.yml
-  when: do_configure == true
-  tags: [ 'init', 'configure' ]
+  when: "'configure' in flags"
+  tags: [ 'configure' ]
 
 - include: ./port_enable.yml
-  when: (do_configure == true) and (vm_client_type == 'gui')
-  tags: [ 'init', 'configure' ]
+  when: "'configure' in flags and (vm_client_type == 'gui')"
+  tags: [ 'configure' ]
+
+- include: ./packages.yml
+  when: "'packages' in flags"
