@@ -1,0 +1,18 @@
+---
+
+- name: Get pm2 location
+  shell: which pm2
+  tags: [ 'always' ]
+  failed_when: pm2_loc.rc > 1
+  register: pm2_loc
+
+- name: Kill all pm2 processes
+  shell: "pm2 kill"
+  become: false
+#  when: pm2_loc.stdout != ''
+  when: pm2_loc.rc == 0
+
+- name: kill tunnels
+  shell: ps -ef | grep 'ssh -NL' | grep -v grep | awk '{print $2}' | xargs kill -9
+  when: ((vm_client_type == 'worker') or (vm_client_type == 'scheduler'))
+

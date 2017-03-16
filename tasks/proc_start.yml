@@ -1,0 +1,6 @@
+---
+
+- name: Start Node Process(es)
+  shell: "npm start"
+  args:
+    chdir: "{{ deploy_dir }}"

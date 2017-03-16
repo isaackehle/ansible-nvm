@@ -17,11 +17,12 @@ tags:
 
 vars: 
   flags:
-    - init            Downloads the nvm project and installs it globally
-    - configure       Runs the configure scripts to install and change the default type
-    - packages        Installed global packages using npm
+    - init            # Downloads the nvm project and installs it globally
+    - configure       # Runs the configure scripts to install and change the default type
+    - packages        # Installed global packages using npm
 
-  vm_client_type:     When set to `gui`, node will be allowed to open ports as non-root
+  vm_client_type:     # When set to `gui`, node will be allowed to open ports as non-root
+                      # When set to `worker` or `scheduler`, tunnels will be auto stopped
 
   nvm:
     type:   "node"    `node`, `iojs`, etc
@@ -55,6 +56,6 @@ Paul Kehle
 ## For local development testing
 
 ```bash
-rsync -av ~/code/ansible-nvm/* ~/.ansible/roles/pgkehle.nvm
+rsync -av --delete ~/code/ansible-nvm/* ~/.ansible/roles/pgkehle.nvm
 ```
 

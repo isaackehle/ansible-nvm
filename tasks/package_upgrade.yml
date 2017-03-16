@@ -1,0 +1,22 @@
+---
+
+- name: Upgrade NPM global packages
+  become: true
+  shell: "npm upgrade -g {{npm_pkgs|join(' ')}} --quiet --silent"
+
+- name: Upgrade NPM local packages
+  shell: "npm upgrade --quiet --silent"
+  args:
+    chdir: "{{ deploy_dir }}"
+
+#- name: Upgrade PM2 modules
+#  shell: "pm2 upgrade {{pm2_mods|join(' ')}}"
+#  args:
+#    chdir: "{{ deploy_dir }}"
+
+- name: Upgrade Bower Packages
+  shell: "bower upgrade"
+  args:
+    chdir: "{{ deploy_dir }}"
+  when: vm_client_type == 'gui'
+

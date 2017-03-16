@@ -3,17 +3,8 @@
 - include: ./prep.yml
   tags: [ 'always' ]
 
-- name: Get pm2 location
-  shell: which pm2
-  tags: [ 'always' ]
-  failed_when: pm2.rc > 1
-  register: pm2
-
-- name: Ensure pm2 is not running
-  shell: "pm2 kill"
-  become: false
-  tags: ['init', 'configure', 'upgrade', 'packages' ]
-  when: pm2.stdout != ''
+- include: ./proc_stop.yml
+  tags: ['init', 'configure', 'upgrade', 'packages', 'pm2' ]
 
 - include: ./init.yml
   when: "'init' in flags"
@@ -27,23 +18,23 @@
   when: "'configure' in flags and vm_client_type == 'gui'"
   tags: [ 'configure' ]
 
-- include: ./packages.yml
+- include: ./package_install.yml
   when: "'packages' in flags"
-  tags: [ 'always' ]
+  tags: [ 'configure', 'packages' ]
 
-- name: Stop Server
-  shell: "npm stop"
-  args:
-    chdir: "{{ deploy_dir }}"
-  register: pm2
-  failed_when: pm2.rc > 1
-  tags: ['init', 'configure', 'upgrade', 'packages' ]
+- include: ./package_upgrade.yml
+  when: "'packages' in flags"
+  tags: [ 'upgrade', 'packages' ]
+
+- include: ./proc_stop.yml
+  tags: ['init', 'configure', 'upgrade', 'packages', 'pm2' ]
   when: deploy_dir is defined and deploy_dir != ''
 
-- name: Start server
-  shell: "npm start"
-  args:
-    chdir: "{{ deploy_dir }}"
-  tags: ['init', 'configure', 'upgrade', 'packages' ]
+- include: ./proc_start.yml
+  tags: ['init', 'configure', 'upgrade', 'packages', 'pm2' ]
+  when: deploy_dir is defined and deploy_dir != ''
+
+- include: ./proc_auto_start.yml
+  tags: ['configure', 'upgrade', 'packages', 'pm2' ]
   when: deploy_dir is defined and deploy_dir != ''
 

@@ -1,0 +1,22 @@
+---
+
+- name: Install NPM global packages
+  become: true
+  shell: "npm install -g {{npm_pkgs|join(' ')}} --quiet --silent"
+
+- name: Install NPM local packages
+  shell: "npm install --quiet --silent"
+  args:
+    chdir: "{{ deploy_dir }}"
+
+- name: Install PM2 modules
+  shell: "pm2 install {{pm2_mods|join(' ')}}"
+  args:
+    chdir: "{{ deploy_dir }}"
+
+- name: Install Bower Packages
+  shell: "bower install"
+  args:
+    chdir: "{{ deploy_dir }}"
+  when: vm_client_type == 'gui'
+
