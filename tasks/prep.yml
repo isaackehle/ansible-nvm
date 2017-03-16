@@ -1,0 +1,18 @@
+---
+
+- debug: var=flags
+  run_once: true
+
+- debug: var=vm_client_type
+
+- name: Create list of global executables
+  set_fact:
+    execs: "{{ executables.all }}"
+  run_once: true
+
+- name: Append gui executables when applicable
+  set_fact:
+    execs: "{{ execs + executables.gui }}"
+  when: vm_client_type == 'gui'
+  run_once: true
+

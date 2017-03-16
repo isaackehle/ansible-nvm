@@ -70,3 +70,18 @@
     owner: root
     group: root
 
+- name: Remove remnant pm2 folders
+  become: true
+  file:
+    state: absent
+    dest: "{{item}}"
+  with_items:
+    - /usr/lib/node_modules
+
+- name: Remove remnant global pm2 links
+  become: true
+  file:
+    state: absent
+    dest: "/usr/bin/{{item}}"
+  with_items: "{{execs}}"
+

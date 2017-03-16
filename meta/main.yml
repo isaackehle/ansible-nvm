@@ -1,6 +1,6 @@
 galaxy_info:
   author: Paul Kehle <twitter.com/pgkehle>
-  description: Global NVM Installation for a system
+  description: Global NVM Installation and Control for a node server
   company: pgkehle
   license: MIT
   min_ansible_version: 1.9

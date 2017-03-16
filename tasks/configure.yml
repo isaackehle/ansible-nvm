@@ -17,6 +17,4 @@
     src:  "{{ nvm_path }}/versions/{{nvm.type}}/v{{nvm.ver}}/bin/{{ item }}"
     dest: "/usr/local/bin/{{ item }}"
     state: link
-  with_items:
-    - node
-    - npm
+  with_items: "{{execs}}"

@@ -12,3 +12,14 @@ global_pkgs:
     - pmx
   gui:
     - bower
+
+executables:
+  all:
+    - node
+    - npm
+    - pm2
+    - pm2-dev
+    - pm2-docker
+    - rundev
+  gui:
+    - bower

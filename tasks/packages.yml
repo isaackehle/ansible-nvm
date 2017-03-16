@@ -1,27 +1,49 @@
 ---
 
-- name: Install NPM global packages (All)
-  become: true
-  shell: "bash -c '. {{ansible_env.NVM_SCRIPT}}; npm install -g {{item}}'"
-  with_items: "{{global_pkgs.all}}"
-  tags: [ 'configure' ]
+- name: Start with all global packages
+  set_fact:
+    pkgs: "{{ global_pkgs.all }}"
+  run_once: true
+  tags: [ 'always' ]
 
-- name: Install NPM global packages (GUI)
-  become: true
-  shell: "bash -c '. {{ansible_env.NVM_SCRIPT}}; npm install -g {{item}}'"
-  when: (vm_client_type == 'gui')
-  with_items: "{{global_pkgs.gui}}"
-  tags: [ 'configure' ]
+- name: Append gui packages when applicable
+  set_fact:
+    pkgs: "{{ pkgs + global_pkgs.gui }}"
+  when: vm_client_type == 'gui'
+  run_once: true
+  tags: [ 'always' ]
 
-- name: Upgrade NPM global packages (All)
-  become: true
-  shell: "bash -c '. {{ansible_env.NVM_SCRIPT}}; npm upgrade -g {{item}}'"
-  with_items: "{{global_pkgs.all}}"
-  tags: [ 'upgrade' ]
+- name: Append gui packages when applicable
+  set_fact:
+    pkgs: "{{ pkgs|join(' ') }}"
+  tags: [ 'always' ]
 
-- name: Upgrade NPM global packages (GUI)
+- name: Install NPM global packages
   become: true
-  shell: "bash -c '. {{ansible_env.NVM_SCRIPT}}; npm upgrade -g {{item}}'"
-  when: (vm_client_type == 'gui')
-  with_items: "{{global_pkgs.gui}}"
-  tags: [ 'upgrade' ]
+  shell: "npm install -g {{pkgs}} --quiet --silent"
+  tags: [ 'configure', 'packages' ]
+
+- name: Upgrade NPM global packages
+  become: true
+  shell: "npm upgrade -g {{pkgs}} --quiet --silent"
+  tags: [ 'upgrade', 'packages' ]
+
+- name: Install NPM local packages
+  shell: "npm install --quiet --silent"
+  args:
+    chdir: "{{ deploy_dir }}"
+  tags: [ 'configure', 'packages' ]
+
+- name: Update NPM local packages
+  shell: "npm upgrade --quiet --silent"
+  args:
+    chdir: "{{ deploy_dir }}"
+  tags: [ 'upgrade', 'packages' ]
+
+- name: Install Bower Packages
+  shell: "npm run bower:install"
+  args:
+    chdir: "{{ deploy_dir }}"
+  when: vm_client_type == 'gui'
+  tags: [ 'configure', 'packages' ]
+

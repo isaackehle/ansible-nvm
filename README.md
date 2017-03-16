@@ -1,6 +1,6 @@
 # Ansible: nvm
 
-Global NVM Installation for a system
+Global NVM Installation and Control for a node server
 
 Available on Ansible Galaxy: [pgkehle.nvm](https://galaxy.ansible.com/pgkehle/nvm)
 
