@@ -1,6 +1,12 @@
 ---
 
+- name: Get npm location
+  shell: which npm
+  failed_when: npm_loc.rc > 1
+  register: npm_loc
+
 - name: Start Node Process(es)
   shell: "npm start"
   args:
     chdir: "{{ deploy_dir }}"
+  when: npm_loc.rc == 0
