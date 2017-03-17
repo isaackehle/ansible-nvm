@@ -8,7 +8,7 @@ Two directories created in `/usr/local`, `nvm_path` and `node_path` are set with
 assigned to the ansible user. 
 The configured version of node/npm are linked into `/usr/local/bin`.
 
-## Tags and Variables
+## Flags and Variables
 
 ```YAML
 vars: 
@@ -37,19 +37,21 @@ vars:
       ver:                "7.7.1"
 
   roles:
-    - { role: pgkehle.nvm, flags: ['init'] }        # Install the nvm script to the server
-    - { role: pgkehle.nvm, flags: ['configure'] }   # Configure nvm to use the version/type in the nvm variable 
-    - { role: pgkehle.nvm, flags: ['packages'] }    # Install global packages 
+    - { role: pgkehle.nvm, flags: ['init'] }        
+    - { role: pgkehle.nvm, flags: ['configure'] }    
+    - { role: pgkehle.nvm, flags: ['upgrade'] }     
+    - { role: pgkehle.nvm, flags: ['processes'] }     
+    - { role: pgkehle.nvm, flags: ['restart'] }     
 ```
 
 ```bash
 export nvm="'nvm': {'type':'node', 'ver': '7.7.1'}"
 export deploy="'deploy_dir': '/opt/servers/node'"
 
-ansible-playbook playbooks/nvm.yml -e "{'flags': ['init']}" -t init
-ansible-playbook playbooks/nvm.yml -e "{'flags': ['configure'], ${nvm}}" -t configure
-ansible-playbook playbooks/nvm.yml -e "{'flags': ['packages'], ${deploy}}" -t packages
-ansible-playbook playbooks/nvm.yml -e "{'flags': ['pm2'], ${deploy}}" -t pm2
+ansible-playbook playbooks/nvm.yml -e "{'flags': ['init']}" 
+ansible-playbook playbooks/nvm.yml -e "{'flags': ['configure'], ${nvm}}" 
+ansible-playbook playbooks/nvm.yml -e "{'flags': ['packages'], ${deploy}}" 
+ansible-playbook playbooks/nvm.yml -e "{'flags': ['pm2'], ${deploy}}"
 ```
 
 
