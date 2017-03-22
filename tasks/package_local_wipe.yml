@@ -1,0 +1,7 @@
+---
+
+- name: Wipe NPM local packages
+  file:
+    dest: "{{ deploy_dir }}/node_modules"
+    state: absent
+

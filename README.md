@@ -15,16 +15,18 @@ vars:
   flags:
     - init            # Downloads the nvm project and installs it globally
     - configure       # Runs the configure scripts to install and change the default type
-    - packages        # Installed global packages using npm
-    - restart         # Restart the node process(es) 
+    - wipe            # Remove local packages folder
+    - packages        # Install global packages using npm, local packages using yarn
+    - upgrade         # Upgrade global packages using npm, local packages using yarn
+    - restart         # Restart the node process(es)
     - processes       # Handle configuration of the process(es) on reboot
 
   vm_client_type:     # When set to `gui`, node will be allowed to open ports as non-root
                       # When set to `worker` or `scheduler`, tunnels will be auto stopped
 
   nvm:
-    type:   "node"    `node`, `iojs`, etc
-    ver:    "7.7.1"   version to install
+    type:   "node"    # `node`, `iojs`, etc
+    ver:    "7.7.4"   # version to install
 ```
 
 ## Examples
@@ -38,14 +40,15 @@ vars:
 
   roles:
     - { role: pgkehle.nvm, flags: ['init'] }        
-    - { role: pgkehle.nvm, flags: ['configure'] }    
+    - { role: pgkehle.nvm, flags: ['wipe'] }
+    - { role: pgkehle.nvm, flags: ['configure'] }
     - { role: pgkehle.nvm, flags: ['upgrade'] }     
     - { role: pgkehle.nvm, flags: ['processes'] }     
     - { role: pgkehle.nvm, flags: ['restart'] }     
 ```
 
 ```bash
-export nvm="'nvm': {'type':'node', 'ver': '7.7.1'}"
+export nvm="'nvm': {'type':'node', 'ver': '7.7.4'}"
 export deploy="'deploy_dir': '/opt/servers/node'"
 
 ansible-playbook playbooks/nvm.yml -e "{'flags': ['init']}" 

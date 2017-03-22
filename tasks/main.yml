@@ -14,10 +14,19 @@
 - include: ./port_enable.yml
   when: ((['configure'] | intersect(flags)) | length > 0) and vm_client_type == 'gui'
 
-- include: ./package_install.yml
+- include: ./package_local_wipe.yml
+  when: ((['wipe'] | intersect(flags)) | length > 0)
+
+- include: ./package_global_install.yml
   when: ((['configure'] | intersect(flags)) | length > 0)
 
-- include: ./package_upgrade.yml
+- include: ./package_global_upgrade.yml
+  when: ((['upgrade'] | intersect(flags)) | length > 0)
+
+- include: ./package_local_install.yml
+  when: ((['configure'] | intersect(flags)) | length > 0)
+
+- include: ./package_local_upgrade.yml
   when: ((['upgrade'] | intersect(flags)) | length > 0)
 
 - include: ./proc_stop.yml

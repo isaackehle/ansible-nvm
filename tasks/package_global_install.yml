@@ -1,0 +1,10 @@
+---
+
+- name: Install NPM global packages
+  become: true
+  shell: "npm install -g {{npm_pkgs|join(' ')}} --quiet --silent"
+
+- name: Install PM2 modules
+  shell: "pm2 install {{pm2_mods|join(' ')}}"
+  args:
+    chdir: "{{ deploy_dir }}"

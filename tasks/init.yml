@@ -30,13 +30,6 @@
   become: true
   when: "{{ user_groups_result.stdout.find(nvm_group) }} == -1"
 
-- name: Clone nvm into place
-  shell: git clone https://github.com/creationix/nvm.git {{nvm_install_dir}}
-  args:
-    creates: "{{nvm_install_dir}}/nvm.sh"
-  become: true
-#  when: nvm_stat.stat.exists != true
-
 - name: Make global directories
   become: true
   file:
@@ -45,9 +38,27 @@
     mode: 0775
     owner: root
     group: "{{nvm_group}}"
+    recurse: true
   with_items:
     - "{{node_path}}"
     - "{{nvm_path}}"
+
+- name: Make global directories inherit
+  become: true
+  file:
+    path: "{{item}}"
+    mode: "g+s"
+    owner: root
+    group: "{{nvm_group}}"
+  with_items:
+    - "{{node_path}}"
+    - "{{nvm_path}}"
+
+- name: Link the .nvm folder to global
+  file:
+    src:  "{{ nvm_path }}"
+    dest: "/home/{{ ansible_user }}/.nvm"
+    state: link
 
 - name: Add required lines to /etc/environment
   become: true
@@ -60,6 +71,13 @@
       source {{nvm_install_dir}}/nvm.sh
     marker: "# {mark} ANSIBLE MANAGED BLOCK - NVM"
     insertbefore: EOL
+
+- name: Clone nvm into place
+  shell: git clone https://github.com/creationix/nvm.git {{nvm_install_dir}}
+  args:
+    creates: "{{nvm_install_dir}}/nvm.sh"
+  become: true
+#  when: nvm_stat.stat.exists != true
 
 - name: Add /etc/profile.d/nvm.sh
   become: true

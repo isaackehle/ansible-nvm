@@ -1,0 +1,13 @@
+---
+
+- name: Install NPM local packages (with yarn)
+  shell: "yarn install"
+  args:
+    chdir: "{{ deploy_dir }}"
+
+- name: Install Bower Packages
+  shell: "bower install"
+  args:
+    chdir: "{{ deploy_dir }}"
+  when: vm_client_type == 'gui'
+

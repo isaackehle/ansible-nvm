@@ -1,0 +1,13 @@
+---
+
+- name: Upgrade NPM local packages (with yarn)
+  shell: "yarn upgrade"
+  args:
+    chdir: "{{ deploy_dir }}"
+
+- name: Upgrade Bower Packages
+  shell: "bower upgrade"
+  args:
+    chdir: "{{ deploy_dir }}"
+  when: vm_client_type == 'gui'
+
