@@ -1,7 +1,7 @@
 ---
 
-- name: Upgrade NPM local packages (with yarn)
-  shell: "yarn upgrade"
+- name: Install latest NPM local packages (with yarn)
+  shell: "yarn install"
   args:
     chdir: "{{ deploy_dir }}"
 

@@ -12,7 +12,7 @@
   when: ((['configure'] | intersect(flags)) | length > 0)
 
 - include: ./port_enable.yml
-  when: ((['configure'] | intersect(flags)) | length > 0) and vm_client_type == 'gui'
+  when: ((['configure', 'port_enable'] | intersect(flags)) | length > 0) and vm_client_type == 'gui'
 
 - include: ./package_local_wipe.yml
   when: ((['wipe'] | intersect(flags)) | length > 0)

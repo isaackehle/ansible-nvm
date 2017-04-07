@@ -48,11 +48,12 @@ vars:
 ```
 
 ```bash
-export nvm="'nvm': {'type':'node', 'ver': '7.7.4'}"
+export nvm="'nvm': {'type':'node', 'ver': '7.8.0'}"
 export deploy="'deploy_dir': '/opt/servers/node'"
 
 ansible-playbook playbooks/nvm.yml -e "{'flags': ['init']}" 
 ansible-playbook playbooks/nvm.yml -e "{'flags': ['configure'], ${nvm}}" 
+ansible-playbook playbooks/nvm.yml -e "{'flags': ['port_enable'], ${nvm}}" 
 ansible-playbook playbooks/nvm.yml -e "{'flags': ['packages'], ${deploy}}" 
 ansible-playbook playbooks/nvm.yml -e "{'flags': ['pm2'], ${deploy}}"
 ```
