@@ -1,7 +1,7 @@
 ---
 
 - name: Install latest NPM local packages (with yarn)
-  shell: "yarn install"
+  shell: "yarn install --force"
   args:
     chdir: "{{ deploy_dir }}"
 
