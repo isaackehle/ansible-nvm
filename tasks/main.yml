@@ -1,40 +1,40 @@
 ---
 
-- include: ./prep.yml
+- include_tasks: ./prep.yml
 
-- include: ./proc_stop.yml
+- include_tasks: ./proc_stop.yml
   when: ((['init', 'processes'] | intersect(flags)) | length > 0)
 
-- include: ./init.yml
+- include_tasks: ./init.yml
   when: ((['init'] | intersect(flags)) | length > 0)
 
-- include: ./configure.yml
+- include_tasks: ./configure.yml
   when: ((['configure'] | intersect(flags)) | length > 0)
 
-- include: ./port_enable.yml
+- include_tasks: ./port_enable.yml
   when: ((['configure', 'port_enable'] | intersect(flags)) | length > 0) and vm_client_type == 'gui'
 
-- include: ./package_local_wipe.yml
+- include_tasks: ./package_local_wipe.yml
   when: ((['wipe'] | intersect(flags)) | length > 0)
 
-- include: ./package_global_install.yml
+- include_tasks: ./package_global_install.yml
   when: ((['configure'] | intersect(flags)) | length > 0)
 
-- include: ./package_global_upgrade.yml
+- include_tasks: ./package_global_upgrade.yml
   when: ((['upgrade'] | intersect(flags)) | length > 0)
 
-- include: ./package_local_install.yml
+- include_tasks: ./package_local_install.yml
   when: ((['configure'] | intersect(flags)) | length > 0)
 
-- include: ./package_local_upgrade.yml
+- include_tasks: ./package_local_upgrade.yml
   when: ((['upgrade'] | intersect(flags)) | length > 0)
 
-- include: ./proc_stop.yml
+- include_tasks: ./proc_stop.yml
   when: ((['restart', 'processes', 'upgrade'] | intersect(flags)) | length > 0) and (deploy_dir is defined and deploy_dir != '')
 
-- include: ./proc_start.yml
+- include_tasks: ./proc_start.yml
   when: ((['restart', 'processes', 'upgrade'] | intersect(flags)) | length > 0) and (deploy_dir is defined and deploy_dir != '')
 
-- include: ./proc_auto_start.yml
+- include_tasks: ./proc_auto_start.yml
   when: ((['processes', 'upgrade'] | intersect(flags)) | length > 0) and (deploy_dir is defined and deploy_dir != '')
 

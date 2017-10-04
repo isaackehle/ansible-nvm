@@ -1,4 +1,4 @@
-# Ansible: nvm
+# Ansible Role - nvm
 
 Global NVM Installation and Control for a node server
 
