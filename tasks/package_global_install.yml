@@ -7,5 +7,5 @@
 - name: Install PM2 modules
   shell: "pm2 install {{pm2_mods|join(' ')}}"
   args:
-    chdir: "{{ deploy_dir }}"
+    chdir: "{{ remote_deploy_dir }}"
   when: pm2_mods | length > 0

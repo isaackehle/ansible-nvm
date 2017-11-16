@@ -3,8 +3,10 @@
 flags:
   - none
 
-package_installer: "yarn"
+remote_base_dir:    ""
+remote_deploy_dir:  ""
+package_installer:  "yarn"
 
 nvm:
-  type:         "node"
-  ver:          "8.9.1"
+  type:             "node"
+  ver:              "8.9.1"

@@ -7,4 +7,4 @@
 #- name: Upgrade PM2 modules
 #  shell: "pm2 upgrade {{pm2_mods|join(' ')}}"
 #  args:
-#    chdir: "{{ deploy_dir }}"
+#    chdir: "{{ remote_deploy_dir }}"

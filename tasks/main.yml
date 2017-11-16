@@ -1,40 +1,57 @@
 ---
 
-- include_tasks: ./prep.yml
+- name: Test Paths
+  include_tasks: ./test_paths.yml
+  when: ((['restart', 'processes', 'upgrade', 'restart'] | intersect(flags)) | length > 0)
 
-- include_tasks: ./proc_stop.yml
+- name: Initial Preparations
+  include_tasks: ./prep.yml
+
+- name: Stop the processes
+  include_tasks: ./proc_stop.yml
   when: ((['init', 'processes'] | intersect(flags)) | length > 0)
 
-- include_tasks: ./init.yml
+- name: Initialize
+  include_tasks: ./init.yml
   when: ((['init'] | intersect(flags)) | length > 0)
 
-- include_tasks: ./configure.yml
+- name: Configure
+  include_tasks: ./configure.yml
   when: ((['configure'] | intersect(flags)) | length > 0)
 
-- include_tasks: ./port_enable.yml
+- name: Enable Ports
+  include_tasks: ./port_enable.yml
   when: ((['configure', 'port_enable'] | intersect(flags)) | length > 0) and vm_client_type == 'gui'
 
-- include_tasks: ./package_local_wipe.yml
+- name: Wipe local packages
+  include_tasks: ./package_local_wipe.yml
   when: ((['wipe'] | intersect(flags)) | length > 0)
 
-- include_tasks: ./package_global_install.yml
+- name: Global install
+  include_tasks: ./package_global_install.yml
   when: ((['configure'] | intersect(flags)) | length > 0)
 
-- include_tasks: ./package_global_upgrade.yml
+- name: Global upgrade
+  include_tasks: ./package_global_upgrade.yml
   when: ((['upgrade'] | intersect(flags)) | length > 0)
 
-- include_tasks: ./package_local_install.yml
+- name: Local install
+  include_tasks: ./package_local_install.yml
   when: ((['configure'] | intersect(flags)) | length > 0)
 
-- include_tasks: ./package_local_upgrade.yml
+- name: Local upgrade
+  include_tasks: ./package_local_upgrade.yml
   when: ((['upgrade'] | intersect(flags)) | length > 0)
 
-- include_tasks: ./proc_stop.yml
-  when: ((['restart', 'processes', 'upgrade'] | intersect(flags)) | length > 0) and (deploy_dir is defined and deploy_dir != '')
+- name: Stop processes
+  include_tasks: ./proc_stop.yml
+  when: ((['restart', 'processes', 'upgrade'] | intersect(flags)) | length > 0)
 
-- include_tasks: ./proc_start.yml
-  when: ((['restart', 'processes', 'upgrade'] | intersect(flags)) | length > 0) and (deploy_dir is defined and deploy_dir != '')
+- name: Start Processes
+  include_tasks: ./proc_start.yml
+  when: ((['restart', 'processes', 'upgrade'] | intersect(flags)) | length > 0)
 
-- include_tasks: ./proc_auto_start.yml
-  when: ((['processes', 'upgrade'] | intersect(flags)) | length > 0) and (deploy_dir is defined and deploy_dir != '')
+- name: Set Auto Start
+  include_tasks: ./proc_auto_start.yml
+  when: ((['processes', 'upgrade'] | intersect(flags)) | length > 0)
 

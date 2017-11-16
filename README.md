@@ -49,13 +49,14 @@ vars:
 
 ```bash
 export nvm="'nvm': {'type':'node', 'ver': '7.8.0'}"
-export deploy="'deploy_dir': '/opt/servers/node'"
+export remote_base_dir="'remote_base_dir': '/opt/servers/node/'"
+export remote_deploy_dir="'remote_deploy_dir': '/opt/servers/node/dist/server'"
 
 ansible-playbook playbooks/nvm.yml -e "{'flags': ['init']}" 
 ansible-playbook playbooks/nvm.yml -e "{'flags': ['configure'], ${nvm}}" 
 ansible-playbook playbooks/nvm.yml -e "{'flags': ['port_enable'], ${nvm}}" 
-ansible-playbook playbooks/nvm.yml -e "{'flags': ['packages'], ${deploy}}" 
-ansible-playbook playbooks/nvm.yml -e "{'flags': ['pm2'], ${deploy}}"
+ansible-playbook playbooks/nvm.yml -e "{'flags': ['packages'], ${remote_base_dir}, ${remote_deploy_dir}}" 
+ansible-playbook playbooks/nvm.yml -e "{'flags': ['pm2'], ${remote_base_dir}, ${remote_deploy_dir}}" 
 ```
 
 

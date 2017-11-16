@@ -5,10 +5,8 @@
   failed_when: npm_loc.rc > 1
   register: npm_loc
 
-- name: Stop Node Process(es)
-  shell: "npm stop"
-  args:
-    chdir: "{{ deploy_dir }}"
+- name: Stop PM2 Process(es)
+  shell: "pm2 stop all"
   register: npm_stop
   failed_when: npm_stop.rc > 1
   when: npm_loc.rc == 0

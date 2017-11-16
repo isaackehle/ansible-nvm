@@ -1,0 +1,8 @@
+---
+
+- fail: msg="Please ensure '{{ item.str }}' is set to a valid path"
+  when:
+    - not item.path is defined or item.path == ""
+  with_items:
+    - { path: '{{ remote_base_dir }}', str: 'remote_base_dir' }
+    - { path: '{{ remote_deploy_dir }}', str: 'remote_deploy_dir' }

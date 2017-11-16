@@ -15,11 +15,7 @@
   include_role:
     name: pgkehle.restart
 
-- name: Start PM2 using ecosystem.yml
-  shell: pm2 start ecosystem.yml
-  become: false
-  args:
-    chdir: "{{ deploy_dir }}"
+- include_tasks: ./proc_start.yml
 
 - name: Set PM2 to start on reboot
   shell: pm2 startup {{ pm2.startup_type }} -u {{ ansible_user }} --hp /home/{{ ansible_user }}
