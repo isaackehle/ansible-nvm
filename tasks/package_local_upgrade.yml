@@ -4,6 +4,13 @@
   shell: "yarn install --force"
   args:
     chdir: "{{ deploy_dir }}"
+  when: package_installer == "yarn"
+
+- name: Install latest NPM local packages (with npm)
+  shell: "npm reinstall"
+  args:
+    chdir: "{{ deploy_dir }}"
+  when: package_installer == "npm"
 
 - name: Upgrade Bower Packages
   shell: "bower upgrade"

@@ -3,6 +3,8 @@
 flags:
   - none
 
+package_installer: "yarn"
+
 nvm:
   type:         "node"
-  ver:          "7.7.1"
+  ver:          "8.9.1"

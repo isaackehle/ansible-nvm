@@ -12,8 +12,3 @@
   register: npm_stop
   failed_when: npm_stop.rc > 1
   when: npm_loc.rc == 0
-
-- name: kill tunnels
-  shell: ps -ef | grep 'ssh -NL' | grep -v grep | awk '{print $2}' | xargs kill -9
-  when: ((vm_client_type == 'worker') or (vm_client_type == 'scheduler'))
-

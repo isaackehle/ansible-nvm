@@ -4,6 +4,13 @@
   shell: "yarn install"
   args:
     chdir: "{{ deploy_dir }}"
+  when: package_installer == "yarn"
+
+- name: Install NPM local packages (with npm)
+  shell: "npm install"
+  args:
+    chdir: "{{ deploy_dir }}"
+  when: package_installer == "npm"
 
 - name: Install Bower Packages
   shell: "bower install"
