@@ -15,6 +15,6 @@
 - name: Install Bower Packages
   shell: "bower install"
   args:
-    chdir: "{{ remote_deploy_dir }}"
+    chdir: "{{ remote_base_dir }}"
   when: vm_client_type == 'gui'
 

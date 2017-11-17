@@ -55,3 +55,7 @@
   include_tasks: ./proc_auto_start.yml
   when: ((['processes', 'upgrade'] | intersect(flags)) | length > 0)
 
+- name: Cleanup
+  include_tasks: ./cleanup.yml
+  tags: ['all']
+

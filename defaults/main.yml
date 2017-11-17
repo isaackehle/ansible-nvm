@@ -3,7 +3,7 @@
 flags:
   - none
 
-remote_base_dir:    ""
+remote_base_dir:    "/opt/servers/node"
 remote_deploy_dir:  ""
 package_installer:  "yarn"
 
