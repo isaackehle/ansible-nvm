@@ -1,19 +1,24 @@
 ---
 
-- name: Install latest NPM local packages (with yarn)
-  shell: "yarn install --force"
+- name: Install latest local packages (with yarn)
+  shell: |
+    . {{ansible_env.NVM_SCRIPT}}
+    yarn install --force
   args:
     chdir: "{{ remote_deploy_dir }}"
   when: package_installer == "yarn"
 
-- name: Install latest NPM local packages (with npm)
-  shell: "npm reinstall"
+- name: Install latest local packages (with npm)
+  shell: |
+    . {{ansible_env.NVM_SCRIPT}}
+    npm reinstall
   args:
     chdir: "{{ remote_deploy_dir }}"
   when: package_installer == "npm"
 
 - name: Upgrade Bower Packages
-  shell: "bower upgrade"
+  shell: |
+    bower upgrade
   args:
     chdir: "{{ remote_deploy_dir }}"
   when: vm_client_type == 'gui'

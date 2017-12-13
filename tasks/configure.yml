@@ -1,20 +1,19 @@
 ---
 
-#- debug:  var=nvm
-#- debug:  var=ansible_env
+- debug:  var=nvm
+- debug:  var=ansible_env
 
 - name:   Install the selected node version
   become: true
-  shell:  "bash -c '. {{ansible_env.NVM_SCRIPT}}; nvm install {{nvm.ver}}'"
-
-- name:   Set the default alias
-  become: true
-  shell:  "bash -c '. {{ansible_env.NVM_SCRIPT}}; nvm alias default {{nvm.ver}}'"
+  shell:  |
+    . {{ansible_env.NVM_SCRIPT}}
+    nvm install {{nvm.ver}}
+    nvm alias default {{nvm.ver}}
 
 - name: Set Permissions
   become: true
   file:
-    path: "{{ nvm_path }}/versions/{{nvm.type}}/v{{nvm.ver}}"
+    path: "{{ nvm_path }}/versions/{{nvm.type}}/{{nvm.ver}}"
     state: directory
     mode: 0775
     owner: root
@@ -24,7 +23,7 @@
 - name:   Link the executable files for all users
   become: true
   file:
-    src:  "{{ nvm_path }}/versions/{{nvm.type}}/v{{nvm.ver}}/bin/{{ item }}"
+    src:  "{{ nvm_path }}/versions/{{nvm.type}}/{{nvm.ver}}/bin/{{ item }}"
     dest: "/usr/local/bin/{{ item }}"
     state: link
     force: true

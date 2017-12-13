@@ -2,9 +2,13 @@
 
 - name: Upgrade NPM global packages
   become: true
-  shell: "npm upgrade -g {{npm_pkgs|join(' ')}} --quiet --silent"
+  shell: |
+    . {{ansible_env.NVM_SCRIPT}}
+    npm upgrade -g {{npm_pkgs|join(' ')}} --quiet --silent
 
 #- name: Upgrade PM2 modules
-#  shell: "pm2 upgrade {{pm2_mods|join(' ')}}"
+#  shell: |
+#    . {{ansible_env.NVM_SCRIPT}}
+#    pm2 upgrade {{pm2_mods|join(' ')}}
 #  args:
 #    chdir: "{{ remote_deploy_dir }}"

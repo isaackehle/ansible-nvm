@@ -1,12 +1,8 @@
 ---
 
-- name: Get npm location
-  shell: which npm
-  failed_when: npm_loc.rc > 1
-  register: npm_loc
-
-- name: Stop PM2 Process(es)
-  shell: "pm2 restart all"
-  register: npm_stop
-  failed_when: npm_stop.rc > 1
-  when: npm_loc.rc == 0
+- name: Restart PM2 Process(es)
+  shell: |
+    . {{ansible_env.NVM_SCRIPT}}
+    pm2 restart all
+  register: res
+  failed_when: res.rc > 1

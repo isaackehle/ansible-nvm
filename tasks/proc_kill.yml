@@ -1,12 +1,6 @@
 ---
 
-- name: Get pm2 location
-  shell: which pm2
-  failed_when: pm2_loc.rc > 1
-  register: pm2_loc
-
 - name: Kill all pm2 processes
-  shell: "pm2 kill"
-  become: false
-#  when: pm2_loc.stdout != ''
-  when: pm2_loc.rc == 0
+  shell: |
+    . {{ansible_env.NVM_SCRIPT}}
+    pm2 kill

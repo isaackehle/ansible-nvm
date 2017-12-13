@@ -1,12 +1,8 @@
 ---
 
-- name: Get npm location
-  shell: which npm
-  failed_when: npm_loc.rc > 1
-  register: npm_loc
-
 - name: Start PM2 Process(es)
-  shell: "pm2 start ecosystem.yml"
+  shell: |
+    . {{ansible_env.NVM_SCRIPT}}
+    pm2 start ecosystem.yml
   args:
     chdir: "{{ remote_base_dir }}"
-  when: npm_loc.rc == 0

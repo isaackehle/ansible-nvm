@@ -1,19 +1,24 @@
 ---
 
-- name: Install NPM local packages (with yarn)
-  shell: "yarn install"
+- name: Install local packages (with yarn)
+  shell: |
+    . {{ansible_env.NVM_SCRIPT}}
+    yarn install
   args:
     chdir: "{{ remote_deploy_dir }}"
   when: package_installer == "yarn"
 
-- name: Install NPM local packages (with npm)
-  shell: "npm install"
+- name: Install local packages (with npm)
+  shell: |
+    . {{ansible_env.NVM_SCRIPT}}
+    npm install
   args:
     chdir: "{{ remote_deploy_dir }}"
   when: package_installer == "npm"
 
 - name: Install Bower Packages
-  shell: "bower install"
+  shell: |
+    bower install
   args:
     chdir: "{{ remote_base_dir }}"
   when: vm_client_type == 'gui'

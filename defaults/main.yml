@@ -9,4 +9,4 @@ package_installer:  "yarn"
 
 nvm:
   type:             "node"
-  ver:              "8.9.1"
+  ver:              "v9.3.0"
