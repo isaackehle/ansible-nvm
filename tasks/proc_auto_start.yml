@@ -1,7 +1,5 @@
 ---
 
-- debug: var=pm2
-
 - name: Remove stuff from .pm2 directory
   file: path={{ pm2.path }}/{{ item }} state=absent
   become: false

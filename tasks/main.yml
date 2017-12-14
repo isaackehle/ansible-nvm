@@ -19,6 +19,10 @@
   include_tasks: init.yml
   when: ((['init'] | intersect(flags)) | length > 0)
 
+- name: Purge old versions
+  include_tasks: purge.yml
+  when: ((['init', 'purge', 'configure'] | intersect(flags)) | length > 0)
+
 - name: Configure
   include_tasks: configure.yml
   when: ((['configure'] | intersect(flags)) | length > 0)

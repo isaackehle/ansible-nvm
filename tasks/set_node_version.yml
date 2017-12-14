@@ -6,10 +6,8 @@
   register: node_version
   connection: local
   environment:
-    NVM_DIR: "$HOME/.nvm"
+    NVM_DIR: "{{ansible_env.HOME}}/.nvm"
   run_once: true
-
-#- debug: var=node_version
 
 - set_fact: new_node_ver=node_version.stdout
   run_once: true

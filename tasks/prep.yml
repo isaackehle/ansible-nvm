@@ -3,8 +3,6 @@
 - debug: var=flags
   run_once: true
 
-- debug: var=vm_client_type
-
 - name: Create list of global execs
   set_fact:
     execs: "{{ globals.all.execs }}"
