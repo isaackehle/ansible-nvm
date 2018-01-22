@@ -1,10 +1,5 @@
 ---
 
-- name: Set NVM_BIN when nvm is installed
-  set_fact:
-    NVM_BIN: "{{ansible_env.NVM_DIR}}/versions/{{nvm.type}}/{{nvm.ver}}/bin"
-  when: ansible_env.NVM_DIR is defined
-
 - name: Test User Permissions To Use Ports 80/443
   shell: setcap -v cap_net_bind_service=+ep {{NVM_BIN}}/node
   become: true

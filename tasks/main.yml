@@ -4,16 +4,12 @@
   include_tasks: test_paths.yml
   when: ((['restart', 'processes', 'upgrade', 'restart'] | intersect(flags)) | length > 0)
 
-- name: Initial Preparations
-  include_tasks: prep.yml
+- name: Initial Preparations, Set Variables
+  include_tasks: set_vars.yml
 
 - name: Stop the processes
   include_tasks: proc_stop.yml
   when: ((['init', 'processes'] | intersect(flags)) | length > 0)
-
-- name: Set Node Version from NVM
-  include_tasks: set_node_version.yml
-  when: ((['init', 'configure', 'upgrade', 'version'] | intersect(flags)) | length > 0)
 
 - name: Initialize
   include_tasks: init.yml
@@ -21,15 +17,13 @@
 
 - name: Purge old versions
   include_tasks: purge.yml
-  when: ((['init', 'purge', 'configure'] | intersect(flags)) | length > 0)
+  when:
+    - ((['init', 'purge', 'configure'] | intersect(flags)) | length > 0)
+    - ansible_env.NVM_SCRIPT is defined
 
 - name: Configure
   include_tasks: configure.yml
   when: ((['configure'] | intersect(flags)) | length > 0)
-
-- name: Enable Ports
-  include_tasks: port_enable.yml
-  when: ((['configure', 'port_enable'] | intersect(flags)) | length > 0) and vm_client_type == 'gui'
 
 - name: Wipe local packages
   include_tasks: package_local_wipe.yml
@@ -62,6 +56,10 @@
 - name: Set Auto Start
   include_tasks: proc_auto_start.yml
   when: ((['processes', 'upgrade'] | intersect(flags)) | length > 0)
+
+- name: Enable Ports
+  include_tasks: port_enable.yml
+  when: ((['port_enable'] | intersect(flags)) | length > 0) and vm_client_type == 'gui'
 
 - name: Cleanup
   include_tasks: cleanup.yml

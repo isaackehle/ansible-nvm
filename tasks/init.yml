@@ -12,6 +12,15 @@
     - libssl-dev
     - curl
 
+- name: Remove node package, in lieu of nvm
+  become: true
+  apt:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - nodejs
+    - node
+
 - name: Test system groups
   shell: cat /etc/group
   register: groups_result
@@ -19,7 +28,7 @@
 - name: Add system group if needed
   shell: groupadd "{{nvm_group}}"
   become: true
-  when: "{{ groups_result.stdout.find(nvm_group) }} == -1"
+  when: groups_result.stdout.find(nvm_group) == -1
 
 - name: Test user groups
   shell: groups
@@ -28,7 +37,7 @@
 - name: Add group to user if needed
   shell: usermod -G "{{nvm_group}}" -a "{{ ansible_user }}"
   become: true
-  when: "{{ user_groups_result.stdout.find(nvm_group) }} == -1"
+  when: user_groups_result.stdout.find(nvm_group) == -1
 
 - name: Make global directories
   become: true

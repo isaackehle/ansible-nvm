@@ -35,3 +35,33 @@
     pm2_mods: "{{ pm2_mods + globals.gui.pm2_mods }}"
   when: vm_client_type == 'gui'
   run_once: true
+
+- name: Set NVM_BIN when nvm is installed
+  set_fact:
+    NVM_BIN: "{{ansible_env.NVM_DIR}}/versions/{{nvm.type}}/{{nvm.ver}}/bin"
+  when:
+    - ansible_env.NVM_DIR is defined
+
+- name: Get npm path
+  shell: which npm
+  become: true
+  register: results_npm
+  failed_when: results_npm.rc > 1
+  changed_when: false
+
+- name: Get pm2 path
+  shell: which pm2
+  become: true
+  register: results_pm2
+  failed_when: results_pm2.rc > 1
+  changed_when: false
+
+- name: Set npm exec path
+  set_fact: NPM_PATH="{{ results_npm.stdout }}"
+
+- name: Set pm2 exec path
+  set_fact: PM2_PATH="{{ results_pm2.stdout }}"
+
+- debug: var=NPM_PATH
+- debug: var=PM2_PATH
+

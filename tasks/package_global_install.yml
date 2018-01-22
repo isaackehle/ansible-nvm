@@ -5,6 +5,8 @@
   shell: |
     . {{ansible_env.NVM_SCRIPT}}
     npm install -g {{npm_pkgs|join(' ')}} --quiet --silent
+  when:
+    - ansible_env.NVM_SCRIPT is defined
 
 - name: Install PM2 modules
   shell: |
@@ -12,4 +14,6 @@
     pm2 install {{pm2_mods|join(' ')}}
   args:
     chdir: "{{ remote_deploy_dir }}"
-  when: pm2_mods | length > 0
+  when:
+    - pm2_mods | length > 0
+    - PM2_PATH != ''

@@ -1,31 +1,41 @@
 ---
 
-- name:   Get currently installed list of versions
-  become: true
-  shell:  |
-    . {{ansible_env.NVM_SCRIPT}}
-    nvm ls {{nvm.type}} --no-colors
-  register: res_vers
-
 - name:   Get current version
   become: true
   shell:  |
     . {{ansible_env.NVM_SCRIPT}}
     nvm ls current --no-colors
   register: res_curr
+  failed_when: false
+
+- name:   Get currently installed list of versions
+  become: true
+  shell:  |
+    . {{ansible_env.NVM_SCRIPT}}
+    nvm ls {{nvm.type}} --no-colors
+  register: res_vers
+  failed_when: false
+  when: res_curr.rc < 1
+
+- debug: var=res_vers
+- debug: var=res_curr
 
 - set_fact:
     versions: []
-    curr_ver: "{{res_curr.stdout | replace('->', '') | replace('v', '') | replace('*', '') | replace(' ', '')}}"
+    curr_ver: "{{res_curr.stdout | replace('->', '') | replace('N/A', '') | replace('v', '') | replace('*', '') | replace(' ', '')}}"
+
+- debug: var=curr_ver
 
 - name: Append versions
   set_fact:
-    versions: "{{ versions + [ item | replace('->', '') | replace(' ', '') | replace('*', '') ] }}"
+    versions: "{{ versions + [ item | replace('->', '') | replace(' ', '') | replace('none', '') | replace('*', '') ] }}"
   with_items: "{{res_vers.stdout_lines}}"
 
 - name: Remove current version from version list
   set_fact:
     versions: "{{ versions | union([curr_ver, 'v'+curr_ver]) | difference([curr_ver, 'v'+curr_ver]) }}"
+
+- debug: var=versions
 
 - name:   Remove old version(s)
   become: true
@@ -33,4 +43,4 @@
     . {{ansible_env.NVM_SCRIPT}}
     nvm uninstall {{ item }}
   failed_when: false
-  with_items: "{{versions}}"
+  with_items: "{{ versions }}"

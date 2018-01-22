@@ -4,3 +4,6 @@
   shell: |
     . {{ansible_env.NVM_SCRIPT}}
     pm2 kill
+  when:
+    - ansible_env.NVM_SCRIPT is defined
+    - PM2_PATH != ''

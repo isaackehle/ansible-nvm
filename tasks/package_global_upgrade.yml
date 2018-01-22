@@ -5,6 +5,8 @@
   shell: |
     . {{ansible_env.NVM_SCRIPT}}
     npm upgrade -g {{npm_pkgs|join(' ')}} --quiet --silent
+  when:
+    - ansible_env.NVM_SCRIPT is defined
 
 #- name: Upgrade PM2 modules
 #  shell: |

@@ -6,6 +6,8 @@
     . {{ansible_env.NVM_SCRIPT}}
     nvm install {{nvm.ver}}
     nvm alias default {{nvm.ver}}
+  when:
+    - ansible_env.NVM_SCRIPT is defined
 
 - name: Set Permissions
   become: true
