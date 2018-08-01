@@ -20,12 +20,12 @@
     - package_installer == "npm"
     - ansible_env.NVM_SCRIPT is defined
 
-- name: Upgrade Bower Packages
-  shell: |
-    bower upgrade
-  args:
-    chdir: "{{ remote_deploy_dir }}"
-  when:
-    - vm_client_type == 'gui'
-    - ansible_env.NVM_SCRIPT is defined
-
+#- name: Upgrade Bower Packages
+#  shell: |
+#    bower upgrade
+#  args:
+#    chdir: "{{ remote_deploy_dir }}"
+#  when:
+#    - vm_client_type == 'gui'
+#    - ansible_env.NVM_SCRIPT is defined
+#

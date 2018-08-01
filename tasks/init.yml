@@ -49,8 +49,8 @@
     group: "{{nvm_group}}"
     recurse: true
   with_items:
-    - "{{node_path}}"
-    - "{{nvm_path}}"
+    - "{{ node_path }}"
+    - "{{ nvm_path }}"
 
 - name: Make global directories inherit
   become: true
@@ -60,8 +60,8 @@
     owner: root
     group: "{{nvm_group}}"
   with_items:
-    - "{{node_path}}"
-    - "{{nvm_path}}"
+    - "{{ node_path }}"
+    - "{{ nvm_path }}"
 
 - name: Link the .nvm folder to global
   file:
@@ -74,16 +74,16 @@
   blockinfile:
     dest: "/etc/environment"
     block: |
-      export NVM_DIR={{nvm_path}}
-      export NODE_PATH={{node_path}}
-      export NVM_SCRIPT={{nvm_install_dir}}/nvm.sh
+      export NVM_DIR={{ nvm_path }}
+      export NODE_PATH={{ node_path }}
+      export NVM_SCRIPT={{ nvm_install_dir }}/nvm.sh
     marker: "# {mark} ANSIBLE MANAGED BLOCK - NVM"
     insertbefore: EOL
 
 - name: Clone nvm into place
-  shell: git clone https://github.com/creationix/nvm.git {{nvm_install_dir}}
+  shell: git clone https://github.com/creationix/nvm.git {{ nvm_install_dir }}
   args:
-    creates: "{{nvm_install_dir}}/nvm.sh"
+    creates: "{{ nvm_install_dir }}/nvm.sh"
   become: true
 #  when: nvm_stat.stat.exists != true
 

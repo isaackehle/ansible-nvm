@@ -26,11 +26,10 @@ globals:
       - pm2
       - pmx
       - yarn
+      - gulp-cli
     pm2_mods:
       - pm2-logrotate
   gui:
-    execs:
-      - bower
-    npm_pkgs:
-      - bower
+    execs: []
+    npm_pkgs: []
     pm2_mods: []
