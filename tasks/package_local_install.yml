@@ -1,31 +1,10 @@
 ---
 
-- name: Install local packages (with yarn)
-  shell: |
-    . {{ansible_env.NVM_SCRIPT}}
-    yarn install
-  args:
-    chdir: "{{ remote_deploy_dir }}"
-  when:
-    - package_installer == "yarn"
-    - ansible_env.NVM_SCRIPT is defined
-
-- name: Install local packages (with npm)
+- name: Install local packages
   shell: |
     . {{ansible_env.NVM_SCRIPT}}
     npm install
   args:
     chdir: "{{ remote_deploy_dir }}"
   when:
-    - package_installer == "npm"
     - ansible_env.NVM_SCRIPT is defined
-
-#- name: Install Bower Packages
-#  shell: |
-#    bower install
-#  args:
-#    chdir: "{{ remote_base_dir }}"
-#  when:
-#    - vm_client_type == 'gui'
-#    - ansible_env.NVM_SCRIPT is defined
-#

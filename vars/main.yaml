@@ -20,12 +20,9 @@ globals:
       - pm2-dev
       - pm2-docker
       - rundev
-      - yarn
-      - yarnpkg
     npm_pkgs:
       - pm2
       - pmx
-      - yarn
       - gulp-cli
     pm2_mods:
       - pm2-logrotate

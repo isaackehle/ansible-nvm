@@ -5,8 +5,7 @@ flags:
 
 remote_base_dir:    "/opt/servers/node"
 remote_deploy_dir:  ""
-package_installer:  "yarn"
 
 nvm:
   type:             "node"
-  ver:              "v9.3.0"
+  ver:              "v10.8.0"

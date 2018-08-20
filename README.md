@@ -16,8 +16,8 @@ vars:
     - init            # Downloads the nvm project and installs it globally
     - configure       # Runs the configure scripts to install and change the default type
     - wipe            # Remove local packages folder
-    - packages        # Install global packages using npm, local packages using yarn
-    - upgrade         # Upgrade global packages using npm, local packages using yarn
+    - packages        # Install global and local packages
+    - upgrade         # Upgrade global and local packages
     - restart         # Restart the node process(es)
     - processes       # Handle configuration of the process(es) on reboot
 
