@@ -3,7 +3,7 @@
 - name: Install latest local packages
   shell: |
     . {{ansible_env.NVM_SCRIPT}}
-    npm reinstall
+    npm install --force
   args:
     chdir: "{{ remote_deploy_dir }}"
   when:
