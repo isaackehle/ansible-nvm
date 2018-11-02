@@ -19,6 +19,7 @@ globals:
       - pm2
       - pm2-dev
       - pm2-docker
+      - migrate-mongo
     npm_pkgs:
       - pm2
       - pmx
