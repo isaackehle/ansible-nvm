@@ -26,7 +26,7 @@
   register: user_groups_result
 
 - name: Add group to user if needed
-  shell: usermod -G "{{nvm_group}}" -a "{{ ansible_user }}"
+  shell: usermod -G "{{nvm_group}}" -a "{{ target_user }}"
   become: true
   when: user_groups_result.stdout.find(nvm_group) == -1
 
@@ -57,7 +57,7 @@
 - name: Link the .nvm folder to global
   file:
     src:  "{{ nvm_path }}"
-    dest: "/home/{{ ansible_user }}/.nvm"
+    dest: "/home/{{ target_user }}/.nvm"
     state: link
 
 - name: Add required lines to /etc/environment

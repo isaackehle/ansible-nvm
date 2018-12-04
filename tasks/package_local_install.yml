@@ -7,3 +7,4 @@
   args:
     chdir: "{{ remote_deploy_dir }}"
   become: true
+  become_user: '{{ target_user }}'

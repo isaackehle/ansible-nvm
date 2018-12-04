@@ -1,25 +1,21 @@
 ---
 
-- name: Remove stuff from .pm2 directory
-  file: path={{ pm2.path }}/{{ item }} state=absent
-  become: false
-  with_items:
-    - dump.pm2
-    - pm2.log
-    - pm2.pid
-    - touch
+# - name: Reboot the server
+#   include_role:
+#     name: pgkehle.restart
 
-- name: Reboot the server
-  include_role:
-    name: pgkehle.restart
-
+- include_tasks: ./proc_stop.yml
 - include_tasks: ./proc_start.yml
 
 - name: Set PM2 to start on reboot
-  shell: pm2 startup {{ pm2.startup_type }} -u {{ ansible_user }} --hp /home/{{ ansible_user }}
+#   shell: pm2 startup
+#   shell: pm2 startup ubuntu -u {{ target_user }} --hp {{ remote_deploy_dir }}
+  shell: pm2 startup systemd -u {{ target_user }} --hp {{ remote_deploy_dir }}
   become: true
+#   become_user: '{{ target_user }}'
 
 - name: Save PM2
   shell: pm2 save
-  become: false
+  become: true
+  become_user: '{{ target_user }}'
 

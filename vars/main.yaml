@@ -6,12 +6,6 @@ nvm_path:         '/usr/local/nvm'
 nvm_group:        'nvm'
 nvm_script:       '{{ nvm_install_dir }}/nvm.sh'
 
-pm2:
-  path:               "/home/{{ ansible_user }}/.pm2"
-  pids:               "/home/{{ ansible_user }}/.pm2/pids"
-  logs:               "/home/{{ ansible_user }}/.pm2/logs"
-  startup_type:       "systemd"
-
 globals:
   execs:
     - node

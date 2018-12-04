@@ -8,3 +8,5 @@
     chdir: "{{ remote_base_dir }}"
   when:
     - PM2_PATH != ''
+  become: true
+  become_user: '{{ target_user }}'
