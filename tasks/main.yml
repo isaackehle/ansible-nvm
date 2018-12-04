@@ -19,7 +19,6 @@
   include_tasks: purge.yml
   when:
     - ((['init', 'purge', 'configure'] | intersect(flags)) | length > 0)
-    - ansible_env.NVM_SCRIPT is defined
 
 - name: Configure
   include_tasks: configure.yml

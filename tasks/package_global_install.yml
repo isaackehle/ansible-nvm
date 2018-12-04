@@ -3,14 +3,12 @@
 - name: Install NPM global packages
   become: true
   shell: |
-    . {{ansible_env.NVM_SCRIPT}}
+    . {{ nvm_script }}
     npm install -g {{npm_pkgs|join(' ')}} --quiet --silent
-  when:
-    - ansible_env.NVM_SCRIPT is defined
 
 - name: Install PM2 modules
   shell: |
-    . {{ansible_env.NVM_SCRIPT}}
+    . {{ nvm_script }}
     pm2 install {{pm2_mods|join(' ')}}
   args:
     chdir: "{{ remote_deploy_dir }}"

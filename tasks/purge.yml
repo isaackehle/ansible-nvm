@@ -3,7 +3,7 @@
 - name:   Get current version
   become: true
   shell:  |
-    . {{ansible_env.NVM_SCRIPT}}
+    . {{ nvm_script }}
     nvm ls current --no-colors
   register: res_curr
   failed_when: false
@@ -11,25 +11,28 @@
 - name:   Get currently installed list of versions
   become: true
   shell:  |
-    . {{ansible_env.NVM_SCRIPT}}
+    . {{ nvm_script }}
     nvm ls {{nvm.type}} --no-colors
   register: res_vers
   failed_when: false
   when: res_curr.rc < 1
 
-- debug: var=res_vers
-- debug: var=res_curr
-
 - set_fact:
     versions: []
     curr_ver: "{{res_curr.stdout | replace('->', '') | replace('N/A', '') | replace('v', '') | replace('*', '') | replace(' ', '')}}"
 
-- debug: var=curr_ver
+
+- debug: var={{item}}
+  with_items:
+    - res_vers
+    - res_curr
+    - curr_ver
 
 - name: Append versions
   set_fact:
     versions: "{{ versions + [ item | replace('->', '') | replace(' ', '') | replace('none', '') | replace('*', '') ] }}"
   with_items: "{{res_vers.stdout_lines}}"
+  when: res_vers is defined and res_vers.stdout_lines is defined
 
 - name: Remove current version from version list
   set_fact:
@@ -40,7 +43,7 @@
 - name:   Remove old version(s)
   become: true
   shell:  |
-    . {{ansible_env.NVM_SCRIPT}}
+    . {{ nvm_script }}
     nvm uninstall {{ item }}
   failed_when: false
   with_items: "{{ versions }}"

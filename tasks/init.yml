@@ -3,23 +3,14 @@
 - name: Install required system packages
   become: true
   apt:
-    name: "{{ item }}"
+    name: [ 'build-essential', 'git', 'openssl', 'libssl-dev', 'curl' ]
     state: present
-  with_items:
-    - build-essential
-    - git
-    - openssl
-    - libssl-dev
-    - curl
 
 - name: Remove node package, in lieu of nvm
   become: true
   apt:
-    name: "{{ item }}"
+    name: [ 'nodejs', 'node' ]
     state: absent
-  with_items:
-    - nodejs
-    - node
 
 - name: Test system groups
   shell: cat /etc/group
@@ -76,7 +67,7 @@
     block: |
       export NVM_DIR={{ nvm_path }}
       export NODE_PATH={{ node_path }}
-      export NVM_SCRIPT={{ nvm_install_dir }}/nvm.sh
+      export NVM_SCRIPT={{ nvm_script }}
     marker: "# {mark} ANSIBLE MANAGED BLOCK - NVM"
     insertbefore: EOL
 

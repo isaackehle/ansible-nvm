@@ -1,13 +1,17 @@
 ---
 
+- fail: msg="Please ensure '{{ item.str }}' is set to a valid path"
+  when:
+    - not item.path is defined or item.path == ""
+  with_items:
+    - { path: '{{ nvm_script }}', str: 'nvm_script' }
+
 - name:   Install the selected node version
   become: true
   shell:  |
-    . {{ansible_env.NVM_SCRIPT}}
-    nvm install {{nvm.ver}}
-    nvm alias default {{nvm.ver}}
-  when:
-    - ansible_env.NVM_SCRIPT is defined
+    . {{ nvm_script }}
+    nvm install {{ nvm.ver }}
+    nvm alias default {{ nvm.ver }}
 
 - name: Set Permissions
   become: true
