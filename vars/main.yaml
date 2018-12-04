@@ -12,21 +12,16 @@ pm2:
   startup_type:       "systemd"
 
 globals:
-  all:
-    execs:
-      - node
-      - npm
-      - pm2
-      - pm2-dev
-      - pm2-docker
-      - migrate-mongo
-    npm_pkgs:
-      - pm2
-      - pmx
-      - gulp-cli
-    pm2_mods:
-      - pm2-logrotate
-  gui:
-    execs: []
-    npm_pkgs: []
-    pm2_mods: []
+  execs:
+    - node
+    - npm
+    - pm2
+    - pm2-dev
+    - pm2-docker
+    - migrate-mongo
+  npm_pkgs:
+    - pm2
+    - pmx
+    - gulp-cli
+  pm2_mods:
+    - pm2-logrotate
