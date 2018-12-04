@@ -11,7 +11,7 @@ The configured version of node/npm are linked into `/usr/local/bin`.
 ## Flags and Variables
 
 ```YAML
-vars: 
+vars:
   flags:
     - init            # Downloads the nvm project and installs it globally
     - configure       # Runs the configure scripts to install and change the default type
@@ -21,8 +21,7 @@ vars:
     - restart         # Restart the node process(es)
     - processes       # Handle configuration of the process(es) on reboot
 
-  vm_client_type:     # When set to `gui`, node will be allowed to open ports as non-root
-                      # When set to `worker` or `scheduler`, tunnels will be auto stopped
+  do_gui:             # When set to true, node will be allowed to open ports as non-root
 
   nvm:
     type:   "node"    # `node`, `iojs`, etc
