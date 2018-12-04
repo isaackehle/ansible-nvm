@@ -59,7 +59,7 @@
 
 - name: Enable Ports
   include_tasks: port_enable.yml
-  when: ((['port_enable'] | intersect(flags)) | length > 0) and vm_client_type == 'gui'
+  when: ((['port_enable'] | intersect(flags)) | length > 0) and do_gui == true
 
 - name: Cleanup
   include_tasks: cleanup.yml

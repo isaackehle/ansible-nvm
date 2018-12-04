@@ -5,35 +5,17 @@
 
 - name: Create list of global execs
   set_fact:
-    execs: "{{ globals.all.execs }}"
-  run_once: true
-
-- name: Append gui execs when applicable
-  set_fact:
-    execs: "{{ execs + globals.gui.execs }}"
-  when: vm_client_type == 'gui'
+    execs: "{{ globals.execs }}"
   run_once: true
 
 - name: Create list of global npm_pkgs
   set_fact:
-    npm_pkgs: "{{ globals.all.npm_pkgs }}"
-  run_once: true
-
-- name: Append gui npm_pkgs when applicable
-  set_fact:
-    npm_pkgs: "{{ npm_pkgs + globals.gui.npm_pkgs }}"
-  when: vm_client_type == 'gui'
+    npm_pkgs: "{{ globals.npm_pkgs }}"
   run_once: true
 
 - name: Create list of global pm2_mods
   set_fact:
-    pm2_mods: "{{ globals.all.pm2_mods }}"
-  run_once: true
-
-- name: Append gui pm2_mods when applicable
-  set_fact:
-    pm2_mods: "{{ pm2_mods + globals.gui.pm2_mods }}"
-  when: vm_client_type == 'gui'
+    pm2_mods: "{{ globals.pm2_mods }}"
   run_once: true
 
 - name: Set NVM_BIN when nvm is installed
