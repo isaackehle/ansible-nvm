@@ -3,23 +3,14 @@
 - name: Install required system packages
   become: true
   apt:
-    name: "{{ item }}"
+    name: [ 'build-essential', 'git', 'openssl', 'libssl-dev', 'curl' ]
     state: present
-  with_items:
-    - build-essential
-    - git
-    - openssl
-    - libssl-dev
-    - curl
 
 - name: Remove node package, in lieu of nvm
   become: true
   apt:
-    name: "{{ item }}"
+    name: [ 'nodejs', 'node' ]
     state: absent
-  with_items:
-    - nodejs
-    - node
 
 - name: Test system groups
   shell: cat /etc/group
@@ -35,7 +26,7 @@
   register: user_groups_result
 
 - name: Add group to user if needed
-  shell: usermod -G "{{nvm_group}}" -a "{{ ansible_user }}"
+  shell: usermod -G "{{nvm_group}}" -a "{{ target_user }}"
   become: true
   when: user_groups_result.stdout.find(nvm_group) == -1
 
@@ -66,7 +57,7 @@
 - name: Link the .nvm folder to global
   file:
     src:  "{{ nvm_path }}"
-    dest: "/home/{{ ansible_user }}/.nvm"
+    dest: "/home/{{ target_user }}/.nvm"
     state: link
 
 - name: Add required lines to /etc/environment
@@ -76,7 +67,7 @@
     block: |
       export NVM_DIR={{ nvm_path }}
       export NODE_PATH={{ node_path }}
-      export NVM_SCRIPT={{ nvm_install_dir }}/nvm.sh
+      export NVM_SCRIPT={{ nvm_script }}
     marker: "# {mark} ANSIBLE MANAGED BLOCK - NVM"
     insertbefore: EOL
 

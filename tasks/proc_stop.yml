@@ -2,10 +2,11 @@
 
 - name: Stop PM2 Process(es)
   shell: |
-    . {{ansible_env.NVM_SCRIPT}}
+    . {{ nvm_script }}
     pm2 stop all
   register: res
   failed_when: res.rc > 1
   when:
-    - ansible_env.NVM_SCRIPT is defined
     - PM2_PATH != ''
+  become: true
+  become_user: '{{ target_user }}'

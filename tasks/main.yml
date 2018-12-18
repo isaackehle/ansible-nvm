@@ -1,4 +1,9 @@
 ---
+  
+- name: Setup the user
+  set_fact: target_user='{{ansible_user}}'
+  when: target_user is undefined
+  tags: ['all']
 
 - name: Test Paths
   include_tasks: test_paths.yml
@@ -19,7 +24,6 @@
   include_tasks: purge.yml
   when:
     - ((['init', 'purge', 'configure'] | intersect(flags)) | length > 0)
-    - ansible_env.NVM_SCRIPT is defined
 
 - name: Configure
   include_tasks: configure.yml
@@ -53,13 +57,13 @@
   include_tasks: proc_start.yml
   when: ((['restart', 'processes', 'upgrade'] | intersect(flags)) | length > 0)
 
-- name: Set Auto Start
+- name: Configure Process Auto Start
   include_tasks: proc_auto_start.yml
-  when: ((['processes', 'upgrade'] | intersect(flags)) | length > 0)
+  when: ((['processes', 'upgrade', 'autostart'] | intersect(flags)) | length > 0)
 
 - name: Enable Ports
   include_tasks: port_enable.yml
-  when: ((['port_enable'] | intersect(flags)) | length > 0) and do_gui == true
+  when: ((['port_enable'] | intersect(flags)) | length > 0) and do_gui is defined and do_gui == true
 
 - name: Cleanup
   include_tasks: cleanup.yml

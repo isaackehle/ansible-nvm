@@ -2,9 +2,9 @@
 
 - name: Install local packages
   shell: |
-    . {{ansible_env.NVM_SCRIPT}}
+    . {{ nvm_script }}
     npm install
   args:
     chdir: "{{ remote_deploy_dir }}"
-  when:
-    - ansible_env.NVM_SCRIPT is defined
+  become: true
+  become_user: '{{ target_user }}'

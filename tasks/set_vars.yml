@@ -20,9 +20,9 @@
 
 - name: Set NVM_BIN when nvm is installed
   set_fact:
-    NVM_BIN: "{{ansible_env.NVM_DIR}}/versions/{{nvm.type}}/{{nvm.ver}}/bin"
+    NVM_BIN: "{{ lookup('env', 'NVM_DIR') }}/versions/{{nvm.type}}/{{nvm.ver}}/bin"
   when:
-    - ansible_env.NVM_DIR is defined
+    - lookup('env', 'NVM_DIR') is defined
 
 - name: Get npm path
   shell: which npm

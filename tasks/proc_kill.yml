@@ -2,8 +2,7 @@
 
 - name: Kill all pm2 processes
   shell: |
-    . {{ansible_env.NVM_SCRIPT}}
+    . {{ nvm_script }}
     pm2 kill
   when:
-    - ansible_env.NVM_SCRIPT is defined
     - PM2_PATH != ''

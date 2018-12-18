@@ -2,10 +2,11 @@
 
 - name: Start PM2 Process(es)
   shell: |
-    . {{ansible_env.NVM_SCRIPT}}
+    . {{ nvm_script }}
     pm2 start ecosystem.yml
   args:
     chdir: "{{ remote_base_dir }}"
   when:
-    - ansible_env.NVM_SCRIPT is defined
     - PM2_PATH != ''
+  become: true
+  become_user: '{{ target_user }}'
