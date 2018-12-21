@@ -8,17 +8,16 @@
 - include_tasks: ./proc_start.yml
 
 #   shell: pm2 startup
-#   shell: pm2 startup ubuntu -u {{ target_user }} --hp {{ remote_deploy_dir }}
-#   shell: pm2 startup systemd -u {{ target_user }} --hp {{ remote_deploy_dir }}
+#   shell: pm2 startup ubuntu -u {{ ansible_user }} --hp {{ remote_deploy_dir }}
+#   shell: pm2 startup systemd -u {{ ansible_user }} --hp {{ remote_deploy_dir }}
 
 - name: Set PM2 to start on reboot
   shell: |
     . {{ nvm_script }}
-    pm2 startup ubuntu -u vm_user --hp '/home/{{target_user}}'
+    pm2 startup ubuntu -u vm_user --hp '/home/{{ansible_user}}'
   become: true
 
 - name: Save PM2
   shell: pm2 save
   become: true
-  become_user: '{{ target_user }}'
-
+  become_user: '{{ generic_user.username }}'

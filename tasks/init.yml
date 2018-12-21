@@ -17,7 +17,7 @@
   register: groups_result
 
 - name: Add system group if needed
-  shell: groupadd "{{nvm_group}}"
+  shell: groupadd "{{ nvm_group }}"
   become: true
   when: groups_result.stdout.find(nvm_group) == -1
 
@@ -26,7 +26,7 @@
   register: user_groups_result
 
 - name: Add group to user if needed
-  shell: usermod -G "{{nvm_group}}" -a "{{ target_user }}"
+  shell: usermod -G "{{ nvm_group }}" -a "{{ generic_user.username }}"
   become: true
   when: user_groups_result.stdout.find(nvm_group) == -1
 
@@ -37,7 +37,7 @@
     state: directory
     mode: 0775
     owner: root
-    group: "{{nvm_group}}"
+    group: "{{ nvm_group }}"
     recurse: true
   with_items:
     - "{{ node_path }}"
@@ -49,7 +49,7 @@
     path: "{{item}}"
     mode: "g+s"
     owner: root
-    group: "{{nvm_group}}"
+    group: "{{ nvm_group }}"
   with_items:
     - "{{ node_path }}"
     - "{{ nvm_path }}"
@@ -57,8 +57,9 @@
 - name: Link the .nvm folder to global
   file:
     src:  "{{ nvm_path }}"
-    dest: "/home/{{ target_user }}/.nvm"
+    dest: "/home/{{ ansible_user }}/.nvm"
     state: link
+
 
 - name: Add required lines to /etc/environment
   become: true
@@ -100,5 +101,5 @@
   file:
     state: absent
     dest: "/usr/bin/{{item}}"
-  with_items: "{{execs}}"
+  with_items: "{{apt_pkgs}}"
 

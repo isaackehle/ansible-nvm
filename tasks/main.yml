@@ -1,10 +1,5 @@
 ---
   
-- name: Setup the user
-  set_fact: target_user='{{ansible_user}}'
-  when: target_user is undefined
-  tags: ['all']
-
 - name: Test Paths
   include_tasks: test_paths.yml
   when: ((['restart', 'processes', 'upgrade', 'restart'] | intersect(flags)) | length > 0)
@@ -69,3 +64,4 @@
   include_tasks: cleanup.yml
   tags: ['all']
 
+  
