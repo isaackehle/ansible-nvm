@@ -20,7 +20,7 @@
     state: directory
     mode: 0775
     owner: root
-    group: "{{nvm_group}}"
+    group: "{{ nvm_group }}"
     recurse: true
 
 - name:   Link the executable files for all users
@@ -30,5 +30,5 @@
     dest: "/usr/local/bin/{{ item }}"
     state: link
     force: true
-  with_items: "{{execs}}"
+  with_items: "{{apt_pkgs}}"
 

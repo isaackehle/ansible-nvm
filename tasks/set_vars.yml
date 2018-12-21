@@ -1,23 +1,5 @@
 ---
 
-- debug: var=flags
-  run_once: true
-
-- name: Create list of global execs
-  set_fact:
-    execs: "{{ globals.execs }}"
-  run_once: true
-
-- name: Create list of global npm_pkgs
-  set_fact:
-    npm_pkgs: "{{ globals.npm_pkgs }}"
-  run_once: true
-
-- name: Create list of global pm2_mods
-  set_fact:
-    pm2_mods: "{{ globals.pm2_mods }}"
-  run_once: true
-
 - name: Set NVM_BIN when nvm is installed
   set_fact:
     NVM_BIN: "{{ lookup('env', 'NVM_DIR') }}/versions/{{nvm.type}}/{{nvm.ver}}/bin"
@@ -44,6 +26,7 @@
 - name: Set pm2 exec path
   set_fact: PM2_PATH="{{ results_pm2.stdout }}"
 
-- debug: var=NPM_PATH
-- debug: var=PM2_PATH
-
+- debug: var={{ item }}
+  with_items:
+    - NPM_PATH
+    - PM2_PATH

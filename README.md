@@ -21,8 +21,9 @@ vars:
     - restart         # Restart the node process(es)
     - processes       # Handle configuration of the process(es) on reboot
 
-  do_gui:             # When set to true, node will be allowed to open ports as non-root
-  target_user:        # Username of the user for which to install
+do_gui:             # When set to true, node will be allowed to open ports as non-root
+  generic_user:
+    username: ''      # Username of the user for which to install
 
 
   nvm:
