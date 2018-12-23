@@ -2,27 +2,39 @@
   
 - name: Test Paths
   include_tasks: test_paths.yml
-  when: ((['restart', 'processes', 'upgrade', 'restart'] | intersect(flags)) | length > 0)
+  when: ((['processes', 'upgrade', 'restart'] | intersect(flags)) | length > 0)
 
 - name: Initial Preparations, Set Variables
   include_tasks: set_vars.yml
 
-- name: Kill any PM2 processes
-  include_tasks: proc_kill.yml
-  when: ((['init'] | intersect(flags)) | length > 0)
-
-- name: Stop the processes
-  include_tasks: proc_stop.yml
-  when: ((['processes'] | intersect(flags)) | length > 0)
-
 - name: Initialize
   include_tasks: init.yml
-  when: ((['init'] | intersect(flags)) | length > 0)
+  when: ((['install', 'autostart'] | intersect(flags)) | length > 0)
+
+- name: Kill any PM2 processes
+  shell: |
+    . {{ nvm_script }}
+    pm2 kill
+  become: true  
+  when: 
+    - PM2_PATH != ''
+    - ((['install', 'autostart'] | intersect(flags)) | length > 0)
+
+- name: Stop PM2 Process
+  shell: |
+    . {{ nvm_script }}
+    pm2 stop all
+  register: res
+  failed_when: res.rc > 1
+  become: true
+  when:
+    - PM2_PATH != ''
+    - ((['processes'] | intersect(flags)) | length > 0)
 
 - name: Purge old versions
   include_tasks: purge.yml
   when:
-    - ((['init', 'purge', 'configure'] | intersect(flags)) | length > 0)
+    - ((['install', 'purge', 'configure'] | intersect(flags)) | length > 0)
 
 - name: Configure
   include_tasks: configure.yml
@@ -41,20 +53,25 @@
   set_fact: npm_mod_list={{ pm2_mods | join(' ') }}
 
 - name: Install NPM global packages
-  shell: |
-    . {{ nvm_script }}
-    npm install -g {{ npm_pkg_list }}
+  shell: npm install -g {{ npm_pkg_list }}
   become: true
   when: ((['configure'] | intersect(flags)) | length > 0)
 
+- name: Link the executable files for all users
+  file:
+    src:  "{{ nvm_path }}/versions/{{nvm.type}}/{{nvm.ver}}/bin/{{ item }}"
+    dest: "/usr/local/bin/{{ item }}"
+    state: link
+    force: true
+  with_items: "{{ apt_pkgs }}"
+  become: true
+  when: ((['configure', 'upgrade'] | intersect(flags)) | length > 0)
+
 - name: Install PM2 modules
-  shell: |
-    . {{ nvm_script }}
-    pm2 install {{ npm_mod_list }}
+  shell: pm2 install {{ npm_mod_list }}
   args:
     chdir: "{{ remote_deploy_dir }}"
   become: true
-#   become_user: '{{ generic_user.username }}'
   when:
     - ((['configure'] | intersect(flags)) | length > 0)
     - npm_mod_list != ''
@@ -73,8 +90,6 @@
     npm install
   args:
     chdir: "{{ remote_deploy_dir }}"
-#   become: true
-#   become_user: '{{ generic_user.username }}'
   when: ((['configure'] | intersect(flags)) | length > 0)
 
 - name: Install latest local packages
@@ -85,27 +100,62 @@
     chdir: "{{ remote_deploy_dir }}"
   when: ((['upgrade'] | intersect(flags)) | length > 0)
 
-- name:   Link the executable files for all users
-  become: true
-  file:
-    src:  "{{ nvm_path }}/versions/{{nvm.type}}/{{nvm.ver}}/bin/{{ item }}"
-    dest: "/usr/local/bin/{{ item }}"
-    state: link
-    force: true
-  with_items: "{{apt_pkgs}}"
-  when: ((['configure', 'upgrade'] | intersect(flags)) | length > 0)
 
-- name: Stop processes
-  include_tasks: proc_stop.yml
-  when: ((['restart', 'processes', 'upgrade'] | intersect(flags)) | length > 0)
+# - name: Stop PM2 Process
+#   shell: |
+#     . {{ nvm_script }}
+#     pm2 stop all
+#   register: res
+#   failed_when: res.rc > 1
+#   when:
+#     - PM2_PATH != ''
+#     - ((['configure', 'restart', 'processes', 'upgrade'] | intersect(flags)) | length > 0)
+#   become: true
 
-- name: Start Processes
-  include_tasks: proc_start.yml
-  when: ((['restart', 'processes', 'upgrade'] | intersect(flags)) | length > 0)
+- name: Start PM2 Process
+  shell: |
+    . {{ nvm_script }}
+    pm2 start ecosystem.yml
+  args:
+    chdir: "{{ remote_base_dir }}"
+  when:
+    - PM2_PATH != ''
+    - ((['configure', 'processes', 'upgrade', 'autostart'] | intersect(flags)) | length > 0)
 
-- name: Configure Process Auto Start
-  include_tasks: proc_auto_start.yml
+- name: Save PM2
+  shell: pm2 save
+  args:
+    chdir: "/home/{{ generic_user.username }}"
   when: ((['processes', 'upgrade', 'autostart'] | intersect(flags)) | length > 0)
+
+- name: Configure PM2 Process Auto Start
+  shell: |
+    . {{ nvm_script }}
+    pm2 startup systemd -u '{{ generic_user.username }}' --hp '/home/{{ generic_user.username }}'
+  args:
+    chdir: "/home/{{ generic_user.username }}"
+  become: true
+  when: ((['processes', 'upgrade', 'autostart'] | intersect(flags)) | length > 0)
+
+- name: Set permissions on /opt/pm2
+  file:
+    path: /opt/pm2
+    owner: '{{ generic_user.username }}' 
+    group: '{{ generic_group }}'
+    mode: 0770
+    recurse: true
+  become: true
+  when: ((['processes', 'upgrade', 'autostart'] | intersect(flags)) | length > 0)
+
+- name: Restart PM2 Process
+  shell: |
+    . {{ nvm_script }}
+    pm2 restart all
+  args:
+    chdir: "{{ remote_base_dir }}"
+  when:
+    - PM2_PATH != ''
+    - ((['restart'] | intersect(flags)) | length > 0)
 
 - name: Enable Ports
   include_tasks: port_enable.yml
@@ -116,5 +166,4 @@
     state: absent
     path: "{{ remote_base_dir }}/core"
   tags: ['all']
-
   

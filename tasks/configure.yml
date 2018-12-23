@@ -7,14 +7,13 @@
     - { path: '{{ nvm_script }}', str: 'nvm_script' }
 
 - name: Install the selected node version
-  become: true
   shell:  |
     . {{ nvm_script }}
     nvm install {{ nvm.ver }}
     nvm alias default {{ nvm.ver }}
+  become: true
 
 - name: Set Permissions
-  become: true
   file:
     path: "{{ nvm_path }}/versions/{{nvm.type}}/{{nvm.ver}}"
     state: directory
@@ -22,4 +21,5 @@
     owner: root
     group: "{{ nvm_group }}"
     recurse: true
+  become: true
 

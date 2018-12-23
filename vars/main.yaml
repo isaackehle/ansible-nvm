@@ -6,18 +6,20 @@ nvm_path:         '/usr/local/nvm'
 nvm_group:        'nvm'
 nvm_script:       '{{ nvm_install_dir }}/nvm.sh'
 
-apt_pkgs:
+node_pkgs:
   - node
   - npm
+
+apt_pkgs:
   - pm2
   - pm2-dev
   - pm2-docker
-  - migrate-mongo
 
 npm_pkgs:
   - pm2
   - pmx
   - gulp-cli
+  - migrate-mongo
 
 pm2_mods:
   - pm2-logrotate
