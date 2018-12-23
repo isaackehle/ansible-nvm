@@ -1,7 +1,0 @@
----
-
-- name: Upgrade NPM global packages
-  become: true
-  shell: |
-    . {{ nvm_script }}
-    npm upgrade -g {{npm_pkgs|join(' ')}} --quiet --silent

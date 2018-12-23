@@ -12,28 +12,25 @@
     name: [ 'nodejs', 'node' ]
     state: absent
 
-- name: Test system groups
-  shell: cat /etc/group
-  register: groups_result
+- name: Ensure the nvm group exists
+  group:
+    name: "{{ nvm_group }}"
+    state: present
 
-- name: Add system group if needed
-  shell: groupadd "{{ nvm_group }}"
+- name: Append the nvm group to users
+  user:
+    name: "{{ item }}"
+    groups: "{{ nvm_group }}"
+    append: yes
+  with_items:
+    - "{{ generic_user.username }}"
+    - "{{ ansible_user }}"
   become: true
-  when: groups_result.stdout.find(nvm_group) == -1
-
-- name: Test user groups
-  shell: groups
-  register: user_groups_result
-
-- name: Add group to user if needed
-  shell: usermod -G "{{ nvm_group }}" -a "{{ generic_user.username }}"
-  become: true
-  when: user_groups_result.stdout.find(nvm_group) == -1
 
 - name: Make global directories
   become: true
   file:
-    path: "{{item}}"
+    path: "{{ item }}"
     state: directory
     mode: 0775
     owner: root
@@ -46,7 +43,7 @@
 - name: Make global directories inherit
   become: true
   file:
-    path: "{{item}}"
+    path: "{{ item }}"
     mode: "g+s"
     owner: root
     group: "{{ nvm_group }}"
@@ -54,12 +51,11 @@
     - "{{ node_path }}"
     - "{{ nvm_path }}"
 
-- name: Link the .nvm folder to global
+- name: Link the global .nvm folder '{{ nvm_path }}' to the ansible user's home directory
   file:
     src:  "{{ nvm_path }}"
     dest: "/home/{{ ansible_user }}/.nvm"
     state: link
-
 
 - name: Add required lines to /etc/environment
   become: true
@@ -92,7 +88,7 @@
   become: true
   file:
     state: absent
-    dest: "{{item}}"
+    dest: "{{ item }}"
   with_items:
     - /usr/lib/node_modules
 
@@ -100,6 +96,6 @@
   become: true
   file:
     state: absent
-    dest: "/usr/bin/{{item}}"
+    dest: "/usr/bin/{{ item }}"
   with_items: "{{apt_pkgs}}"
 

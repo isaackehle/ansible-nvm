@@ -1,8 +1,0 @@
----
-
-- name: Install latest local packages
-  shell: |
-    . {{ nvm_script }}
-    npm install --force
-  args:
-    chdir: "{{ remote_deploy_dir }}"

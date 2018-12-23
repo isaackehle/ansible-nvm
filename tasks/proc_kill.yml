@@ -6,3 +6,4 @@
     pm2 kill
   when:
     - PM2_PATH != ''
+  become: true

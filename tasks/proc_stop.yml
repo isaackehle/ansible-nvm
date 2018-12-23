@@ -9,4 +9,4 @@
   when:
     - PM2_PATH != ''
   become: true
-  become_user: '{{ generic_user.username }}'
+  # become_user: '{{ generic_user.username }}'

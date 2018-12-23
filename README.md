@@ -51,8 +51,8 @@ do_gui:             # When set to true, node will be allowed to open ports as no
 
 ```bash
 export nvm="'nvm': {'type':'node', 'ver': '10.8.0'}"
-export remote_base_dir="'remote_base_dir': '/opt/servers/node/'"
-export remote_deploy_dir="'remote_deploy_dir': '/opt/servers/node/dist/server'"
+export remote_base_dir="'remote_base_dir': '/srv/myserver/'"
+export remote_deploy_dir="'remote_deploy_dir': '/srv/myserver/dist/server'"
 
 ansible-playbook playbooks/nvm.yml -e "{'flags': ['init']}"
 ansible-playbook playbooks/nvm.yml -e "{'flags': ['configure'], ${nvm}}"

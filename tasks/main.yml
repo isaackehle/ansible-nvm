@@ -7,9 +7,13 @@
 - name: Initial Preparations, Set Variables
   include_tasks: set_vars.yml
 
+- name: Kill any PM2 processes
+  include_tasks: proc_kill.yml
+  when: ((['init'] | intersect(flags)) | length > 0)
+
 - name: Stop the processes
   include_tasks: proc_stop.yml
-  when: ((['init', 'processes'] | intersect(flags)) | length > 0)
+  when: ((['processes'] | intersect(flags)) | length > 0)
 
 - name: Initialize
   include_tasks: init.yml
@@ -24,25 +28,72 @@
   include_tasks: configure.yml
   when: ((['configure'] | intersect(flags)) | length > 0)
 
-- name: Wipe local packages
-  include_tasks: package_local_wipe.yml
+- name: Wipe NPM local packages
+  file:
+    dest: "{{ remote_deploy_dir }}/node_modules"
+    state: absent
   when: ((['wipe'] | intersect(flags)) | length > 0)
 
-- name: Global install
-  include_tasks: package_global_install.yml
+- name: Set NPM packages string
+  set_fact: npm_pkg_list={{ npm_pkgs | join(' ') }}
+
+- name: Set NPM modules string
+  set_fact: npm_mod_list={{ pm2_mods | join(' ') }}
+
+- name: Install NPM global packages
+  shell: |
+    . {{ nvm_script }}
+    npm install -g {{ npm_pkg_list }}
+  become: true
   when: ((['configure'] | intersect(flags)) | length > 0)
 
-- name: Global upgrade
-  include_tasks: package_global_upgrade.yml
+- name: Install PM2 modules
+  shell: |
+    . {{ nvm_script }}
+    pm2 install {{ npm_mod_list }}
+  args:
+    chdir: "{{ remote_deploy_dir }}"
+  become: true
+  become_user: '{{ generic_user.username }}'
+  when:
+    - ((['configure'] | intersect(flags)) | length > 0)
+    - npm_mod_list != ''
+    - PM2_PATH != ''
+
+- name: Upgrade NPM global packages
+  become: true
+  shell: |
+    . {{ nvm_script }}
+    npm upgrade -g {{ npm_pkg_list }}
   when: ((['upgrade'] | intersect(flags)) | length > 0)
 
-- name: Local install
-  include_tasks: package_local_install.yml
+- name: Install local packages
+  shell: |
+    . {{ nvm_script }}
+    npm install
+  args:
+    chdir: "{{ remote_deploy_dir }}"
+  become: true
+  become_user: '{{ generic_user.username }}'
   when: ((['configure'] | intersect(flags)) | length > 0)
 
-- name: Local upgrade
-  include_tasks: package_local_upgrade.yml
+- name: Install latest local packages
+  shell: |
+    . {{ nvm_script }}
+    npm install --force
+  args:
+    chdir: "{{ remote_deploy_dir }}"
   when: ((['upgrade'] | intersect(flags)) | length > 0)
+
+- name:   Link the executable files for all users
+  become: true
+  file:
+    src:  "{{ nvm_path }}/versions/{{nvm.type}}/{{nvm.ver}}/bin/{{ item }}"
+    dest: "/usr/local/bin/{{ item }}"
+    state: link
+    force: true
+  with_items: "{{apt_pkgs}}"
+  when: ((['configure', 'upgrade'] | intersect(flags)) | length > 0)
 
 - name: Stop processes
   include_tasks: proc_stop.yml
@@ -60,8 +111,10 @@
   include_tasks: port_enable.yml
   when: ((['port_enable'] | intersect(flags)) | length > 0) and do_gui is defined and do_gui == true
 
-- name: Cleanup
-  include_tasks: cleanup.yml
+- name: Clean artifact path
+  file:
+    state: absent
+    path: "{{ remote_base_dir }}/core"
   tags: ['all']
 
   

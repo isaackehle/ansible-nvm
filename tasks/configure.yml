@@ -6,7 +6,7 @@
   with_items:
     - { path: '{{ nvm_script }}', str: 'nvm_script' }
 
-- name:   Install the selected node version
+- name: Install the selected node version
   become: true
   shell:  |
     . {{ nvm_script }}
@@ -22,13 +22,4 @@
     owner: root
     group: "{{ nvm_group }}"
     recurse: true
-
-- name:   Link the executable files for all users
-  become: true
-  file:
-    src:  "{{ nvm_path }}/versions/{{nvm.type}}/{{nvm.ver}}/bin/{{ item }}"
-    dest: "/usr/local/bin/{{ item }}"
-    state: link
-    force: true
-  with_items: "{{apt_pkgs}}"
 

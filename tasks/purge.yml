@@ -21,12 +21,11 @@
     versions: []
     curr_ver: "{{res_curr.stdout | replace('->', '') | replace('N/A', '') | replace('v', '') | replace('*', '') | replace(' ', '')}}"
 
-
-- debug: var={{item}}
-  with_items:
-    - res_vers
-    - res_curr
-    - curr_ver
+# - debug: var={{ item }}
+#   with_items:
+#     - res_vers
+#     - res_curr
+#     - curr_ver
 
 - name: Append versions
   set_fact:
