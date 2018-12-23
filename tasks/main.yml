@@ -54,7 +54,7 @@
   args:
     chdir: "{{ remote_deploy_dir }}"
   become: true
-  become_user: '{{ generic_user.username }}'
+#   become_user: '{{ generic_user.username }}'
   when:
     - ((['configure'] | intersect(flags)) | length > 0)
     - npm_mod_list != ''
@@ -73,8 +73,8 @@
     npm install
   args:
     chdir: "{{ remote_deploy_dir }}"
-  become: true
-  become_user: '{{ generic_user.username }}'
+#   become: true
+#   become_user: '{{ generic_user.username }}'
   when: ((['configure'] | intersect(flags)) | length > 0)
 
 - name: Install latest local packages
