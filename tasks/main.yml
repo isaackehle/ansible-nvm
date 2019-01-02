@@ -7,8 +7,8 @@
 - name: Initial Preparations, Set Variables
   include_tasks: set_vars.yml
 
-- name: Initialize
-  include_tasks: init.yml
+- name: Install
+  include_tasks: install.yml
   when: ((['install', 'autostart'] | intersect(flags)) | length > 0)
 
 - name: Kill any PM2 processes
