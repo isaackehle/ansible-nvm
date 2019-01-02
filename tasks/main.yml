@@ -77,13 +77,6 @@
     - npm_mod_list != ''
     - PM2_PATH != ''
 
-- name: Upgrade NPM global packages
-  become: true
-  shell: |
-    . {{ nvm_script }}
-    npm upgrade -g {{ npm_pkg_list }}
-  when: ((['upgrade'] | intersect(flags)) | length > 0)
-
 - name: Install local packages
   shell: |
     . {{ nvm_script }}
@@ -92,14 +85,20 @@
     chdir: "{{ remote_deploy_dir }}"
   when: ((['configure'] | intersect(flags)) | length > 0)
 
-- name: Install latest local packages
+- name: Upgrade NPM global packages
+  become: true
+  shell: |
+    . {{ nvm_script }}
+    npm upgrade -g {{ npm_pkg_list }}
+  when: ((['upgrade'] | intersect(flags)) | length > 0)
+
+- name: Force Install local packages
   shell: |
     . {{ nvm_script }}
     npm install --force
   args:
     chdir: "{{ remote_deploy_dir }}"
   when: ((['upgrade'] | intersect(flags)) | length > 0)
-
 
 # - name: Stop PM2 Process
 #   shell: |
