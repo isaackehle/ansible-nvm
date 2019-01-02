@@ -39,6 +39,11 @@
   become: true
   when: ((['install', 'configure', 'upgrade', 'autostart'] | intersect(flags)) | length > 0)
 
+- name: Remove ansible user's home directory .pm2 folder
+  file:
+    name: "/home/{{ ansible_user }}/.pm2"
+    state: absent
+
 - name: Link the global npm opt directory to the ansible user's home directory
   file:
     src:  /opt/pm2
