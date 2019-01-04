@@ -5,7 +5,7 @@
   when: ((['processes', 'upgrade', 'restart'] | intersect(flags)) | length > 0)
 
 - name: Initial Preparations, Set Variables
-  include_tasks: set_vars.yml
+  include_tasks: common.yml
 
 - name: Install
   include_tasks: install.yml
@@ -47,10 +47,12 @@
   when: ((['wipe'] | intersect(flags)) | length > 0)
 
 - name: Set NPM packages string
-  set_fact: npm_pkg_list={{ npm_pkgs | join(' ') }}
+  set_fact: 
+    npm_pkg_list: "{{ npm_pkgs | join(' ') }}"
 
 - name: Set NPM modules string
-  set_fact: npm_mod_list={{ pm2_mods | join(' ') }}
+  set_fact: 
+    npm_mod_list: "{{ pm2_mods | join(' ') }}"
 
 - name: Install NPM global packages
   shell: npm install -g {{ npm_pkg_list }}
@@ -59,7 +61,7 @@
 
 - name: Link the executable files for all users
   file:
-    src:  "{{ nvm_path }}/versions/{{ nvm.type }}/{{ nvm.ver }}/bin/{{ item }}"
+    src: "{{ nvm_dir }}/versions/{{ nvm.type }}/{{ nvm.ver }}/bin/{{ item }}"
     dest: "/usr/local/bin/{{ item }}"
     state: link
     force: true

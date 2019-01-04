@@ -1,8 +1,8 @@
 ---
 
 nvm_install_dir:  '/opt/nvm'
-node_path:        '/usr/local/node'
-nvm_path:         '/usr/local/nvm'
+node_dir:         '/usr/local/node'
+nvm_dir:          '/usr/local/nvm'
 nvm_group:        'nvm'
 nvm_script:       '{{ nvm_install_dir }}/nvm.sh'
 

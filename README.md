@@ -4,7 +4,7 @@ Global NVM Installation and Control for a node server
 
 Available on Ansible Galaxy: [pgkehle.nvm](https://galaxy.ansible.com/pgkehle/nvm)
 
-Two directories created in `/usr/local`, `nvm_path` and `node_path` are set with group ownership of `nvm`.  This group is created and
+Two directories created in `/usr/local`, `nvm_dir` and `node_dir` are set with group ownership of `nvm`.  This group is created and
 assigned to the ansible user.
 The configured version of node/npm are linked into `/usr/local/bin`.
 
