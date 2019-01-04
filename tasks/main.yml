@@ -59,7 +59,7 @@
 
 - name: Link the executable files for all users
   file:
-    src:  "{{ nvm_path }}/versions/{{nvm.type}}/{{nvm.ver}}/bin/{{ item }}"
+    src:  "{{ nvm_path }}/versions/{{ nvm.type }}/{{ nvm.ver }}/bin/{{ item }}"
     dest: "/usr/local/bin/{{ item }}"
     state: link
     force: true

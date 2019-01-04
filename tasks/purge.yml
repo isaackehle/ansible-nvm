@@ -12,14 +12,14 @@
   become: true
   shell:  |
     . {{ nvm_script }}
-    nvm ls {{nvm.type}} --no-colors
+    nvm ls {{ nvm.type }} --no-colors
   register: res_vers
   failed_when: false
   when: res_curr.rc < 1
 
 - set_fact:
     versions: []
-    curr_ver: "{{res_curr.stdout | replace('->', '') | replace('N/A', '') | replace('v', '') | replace('*', '') | replace(' ', '')}}"
+    curr_ver: "{{ res_curr.stdout | replace('->', '') | replace('N/A', '') | replace('v', '') | replace('*', '') | replace(' ', '') }}"
 
 # - debug: var={{ item }}
 #   with_items:
@@ -30,7 +30,7 @@
 - name: Append versions
   set_fact:
     versions: "{{ versions + [ item | replace('->', '') | replace(' ', '') | replace('none', '') | replace('*', '') ] }}"
-  with_items: "{{res_vers.stdout_lines}}"
+  with_items: "{{ res_vers.stdout_lines }}"
   when: res_vers is defined and res_vers.stdout_lines is defined
 
 - name: Remove current version from version list

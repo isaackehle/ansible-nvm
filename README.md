@@ -55,10 +55,10 @@ export remote_base_dir="'remote_base_dir': '/srv/myserver/'"
 export remote_deploy_dir="'remote_deploy_dir': '/srv/myserver/dist/server'"
 
 ansible-playbook playbooks/nvm.yml -e "{'flags': ['init']}"
-ansible-playbook playbooks/nvm.yml -e "{'flags': ['configure'], ${nvm}}"
-ansible-playbook playbooks/nvm.yml -e "{'flags': ['port_enable'], ${nvm}}"
-ansible-playbook playbooks/nvm.yml -e "{'flags': ['packages'], ${remote_base_dir}, ${remote_deploy_dir}}"
-ansible-playbook playbooks/nvm.yml -e "{'flags': ['pm2'], ${remote_base_dir}, ${remote_deploy_dir}}"
+ansible-playbook playbooks/nvm.yml -e "{'flags': ['configure'], ${nvm }}"
+ansible-playbook playbooks/nvm.yml -e "{'flags': ['port_enable'], ${nvm }}"
+ansible-playbook playbooks/nvm.yml -e "{'flags': ['packages'], ${remote_base_dir}, ${remote_deploy_dir }}"
+ansible-playbook playbooks/nvm.yml -e "{'flags': ['pm2'], ${remote_base_dir}, ${remote_deploy_dir }}"
 ```
 
 ## License

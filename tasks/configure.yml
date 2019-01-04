@@ -17,7 +17,7 @@
 
 - name: Set Permissions
   file:
-    path: "{{ nvm_path }}/versions/{{nvm.type}}/{{nvm.ver}}"
+    path: "{{ nvm_path }}/versions/{{ nvm.type }}/{{ nvm.ver }}"
     state: directory
     mode: 0775
     owner: root

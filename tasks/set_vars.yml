@@ -2,9 +2,8 @@
 
 - name: Set NVM_BIN when nvm is installed
   set_fact:
-    NVM_BIN: "{{ lookup('env', 'NVM_DIR') }}/versions/{{nvm.type}}/{{nvm.ver}}/bin"
-  when:
-    - lookup('env', 'NVM_DIR') is defined
+    NVM_BIN: "{{ lookup('env', 'NVM_DIR') }}/versions/{{ nvm.type }}/{{ nvm.ver }}/bin"
+  when: lookup('env', 'NVM_DIR') is defined
 
 - name: Get npm path
   shell: which npm
@@ -21,12 +20,16 @@
   changed_when: false
 
 - name: Set npm exec path
-  set_fact: NPM_PATH="{{ results_npm.stdout }}"
+  set_fact: 
+    NPM_PATH: "{{ results_npm.stdout }}"
 
 - name: Set pm2 exec path
-  set_fact: PM2_PATH="{{ results_pm2.stdout }}"
+  set_fact: 
+    PM2_PATH: "{{ results_pm2.stdout }}"
 
-- debug: var={{ item }}
+- name: debugging
+  debug: 
+    var: "{{ item }}"
   with_items:
     - NPM_PATH
     - PM2_PATH
