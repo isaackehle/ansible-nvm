@@ -1,7 +1,0 @@
----
-
-- name: Wipe NPM local packages
-  file:
-    dest: "{{ remote_deploy_dir }}/node_modules"
-    state: absent
-

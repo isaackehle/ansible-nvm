@@ -1,8 +1,0 @@
----
-
-- name: Kill all pm2 processes
-  shell: |
-    . {{ nvm_script }}
-    pm2 kill
-  when:
-    - PM2_PATH != ''

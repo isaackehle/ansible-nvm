@@ -1,0 +1,152 @@
+---
+
+- name: Install required system packages
+  apt:
+    name: [ 'build-essential', 'git', 'openssl', 'libssl-dev', 'curl' ]
+    state: present
+  become: true
+
+- name: Remove node package, in lieu of nvm
+  apt:
+    name: [ 'nodejs', 'node' ]
+    state: absent
+  become: true
+
+- name: Ensure the nvm group exists
+  group:
+    name: "{{ nvm_group }}"
+    state: present
+  become: true
+
+- name: Append the nvm group to users
+  user:
+    name: "{{ item }}"
+    groups: "{{ nvm_group }}"
+    append: yes
+  with_items:
+    - "{{ generic_user.username }}"
+    - "{{ ansible_user }}"
+  become: true
+
+- name: Make global npm opt directory
+  file:
+    dest: /opt/pm2
+    state: directory
+    force: true
+    owner: '{{ generic_user.username }}'
+    group: '{{ generic_group }}'
+    mode: 0770
+  become: true
+  when: ((['install', 'configure', 'upgrade', 'autostart'] | intersect(flags)) | length > 0)
+
+- name: Remove ansible user's home directory .pm2 folder
+  file:
+    name: "/home/{{ ansible_user }}/.pm2"
+    state: absent
+
+- name: Link the global npm opt directory to the ansible user's home directory
+  file:
+    src:  /opt/pm2
+    dest: "/home/{{ ansible_user }}/.pm2"
+    state: link
+  when: ((['install', 'configure', 'upgrade', 'autostart'] | intersect(flags)) | length > 0)
+
+- name: Link the global npm opt directory to the generic_user's home directory
+  file:
+    src:  /opt/pm2
+    dest: "/home/{{ generic_user.username }}/.pm2"
+    state: link
+    owner: '{{ generic_user.username }}'
+    group: '{{ generic_group }}'
+  become: true
+  when: ((['install', 'configure', 'upgrade', 'autostart'] | intersect(flags)) | length > 0)
+
+- name: Make global directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0775
+    owner: root
+    group: "{{ nvm_group }}"
+    recurse: true
+  with_items:
+    - "{{ node_dir }}"
+    - "{{ nvm_dir }}"
+  become: true
+
+- name: Make global directories inherit
+  file:
+    path: "{{ item }}"
+    mode: "g+s"
+    owner: root
+    group: "{{ nvm_group }}"
+  with_items:
+    - "{{ node_dir }}"
+    - "{{ nvm_dir }}"
+  become: true
+
+- name: Link the global .nvm folder '{{ nvm_dir }}' to the ansible user's home directory
+  file:
+    src:  "{{ nvm_dir }}"
+    dest: "/home/{{ ansible_user }}/.nvm"
+    state: link
+
+- name: Link the global .nvm folder '{{ nvm_dir }}' to the generic_user's home directory
+  file:
+    src:  "{{ nvm_dir }}"
+    dest: "/home/{{ generic_user.username }}/.nvm"
+    state: link
+    owner: '{{ generic_user.username }}'
+    group: '{{ generic_user.username }}'
+  become: true
+
+- name: Add a block of required statements to /etc/environment
+  blockinfile:
+    dest: "/etc/environment"
+    block: |
+      export NVM_DIR={{ nvm_dir }}
+      export NODE_PATH={{ node_dir }}
+      export NVM_SCRIPT={{ nvm_script }}
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - NVM"
+    insertbefore: EOL
+  become: true
+
+- name: Clone nvm into place
+  shell: git clone https://github.com/creationix/nvm.git {{ nvm_install_dir }}
+  args:
+    creates: "{{ nvm_install_dir }}/nvm.sh"
+  become: true
+#  when: nvm_stat.stat.exists != true
+
+- name: Add /etc/profile.d/nvm.sh
+  template:
+    src: ../templates/nvm.sh.j2
+    dest: /etc/profile.d/nvm.sh
+    mode: 0644
+    owner: root
+    group: root
+  become: true
+
+- name: Remove remnant pm2 folders
+  file:
+    state: absent
+    dest: "{{ item }}"
+  with_items:
+    - /usr/lib/node_modules
+  become: true
+
+- name: Remove remnant global pm2 links
+  file:
+    state: absent
+    dest: "/usr/bin/{{ item }}"
+  with_items: "{{ apt_pkgs }}"
+  become: true
+
+- name: Link node executables
+  file:
+    src:  "{{ nvm_dir }}/versions/{{ nvm.type }}/{{ nvm.ver }}/bin/{{ item }}"
+    dest: "/usr/local/bin/{{ item }}"
+    state: link
+    force: true
+  with_items: "{{ node_pkgs }}"
+  become: true

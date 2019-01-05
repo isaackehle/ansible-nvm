@@ -1,34 +1,27 @@
 ---
 
-- fail: msg="Please ensure '{{ item.str }}' is set to a valid path"
+- name: Ensure Required Items
+  fail: 
+    msg: "Please ensure '{{ item.str }}' is set to a valid path"
   when:
     - not item.path is defined or item.path == ""
   with_items:
     - { path: '{{ nvm_script }}', str: 'nvm_script' }
 
-- name:   Install the selected node version
-  become: true
+- name: Install the selected node version
   shell:  |
     . {{ nvm_script }}
     nvm install {{ nvm.ver }}
     nvm alias default {{ nvm.ver }}
+  become: true
 
 - name: Set Permissions
-  become: true
   file:
-    path: "{{ nvm_path }}/versions/{{nvm.type}}/{{nvm.ver}}"
+    path: "{{ nvm_dir }}/versions/{{ nvm.type }}/{{ nvm.ver }}"
     state: directory
     mode: 0775
     owner: root
     group: "{{ nvm_group }}"
     recurse: true
-
-- name:   Link the executable files for all users
   become: true
-  file:
-    src:  "{{ nvm_path }}/versions/{{nvm.type}}/{{nvm.ver}}/bin/{{ item }}"
-    dest: "/usr/local/bin/{{ item }}"
-    state: link
-    force: true
-  with_items: "{{apt_pkgs}}"
 

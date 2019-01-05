@@ -1,6 +1,6 @@
 ---
 
-- name:   Get current version
+- name: Get current version
   become: true
   shell:  |
     . {{ nvm_script }}
@@ -8,37 +8,29 @@
   register: res_curr
   failed_when: false
 
-- name:   Get currently installed list of versions
+- name: Get currently installed list of versions
   become: true
   shell:  |
     . {{ nvm_script }}
-    nvm ls {{nvm.type}} --no-colors
+    nvm ls {{ nvm.type }} --no-colors
   register: res_vers
   failed_when: false
   when: res_curr.rc < 1
 
-- set_fact:
+- name: Variables
+  set_fact:
     versions: []
-    curr_ver: "{{res_curr.stdout | replace('->', '') | replace('N/A', '') | replace('v', '') | replace('*', '') | replace(' ', '')}}"
-
-
-- debug: var={{item}}
-  with_items:
-    - res_vers
-    - res_curr
-    - curr_ver
+    curr_ver: "{{ res_curr.stdout | replace('->', '') | replace('N/A', '') | replace('v', '') | replace('*', '') | replace(' ', '') }}"
 
 - name: Append versions
   set_fact:
     versions: "{{ versions + [ item | replace('->', '') | replace(' ', '') | replace('none', '') | replace('*', '') ] }}"
-  with_items: "{{res_vers.stdout_lines}}"
+  with_items: "{{ res_vers.stdout_lines }}"
   when: res_vers is defined and res_vers.stdout_lines is defined
 
 - name: Remove current version from version list
   set_fact:
     versions: "{{ versions | union([curr_ver, 'v'+curr_ver]) | difference([curr_ver, 'v'+curr_ver]) }}"
-
-- debug: var=versions
 
 - name:   Remove old version(s)
   become: true
