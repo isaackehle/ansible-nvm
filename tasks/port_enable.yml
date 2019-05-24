@@ -1,5 +1,4 @@
 ---
-
 - name: Test User Permissions To Use Ports 80/443
   shell: setcap -v cap_net_bind_service=+ep {{ NVM_BIN }}/node
   become: true
@@ -9,7 +8,7 @@
 
 - name: Determine if the permissions are needed
   set_fact:
-    differs: "{{ results_cap.stdout.find('differs') >= 1 }}"
+      differs: "{{ results_cap.stdout.find('differs') >= 1 }}"
 
 - name: Give Safe User Permission To Use Ports 80/443
   shell: setcap cap_net_bind_service=+ep {{ NVM_BIN }}/node

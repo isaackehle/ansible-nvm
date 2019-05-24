@@ -1,5 +1,4 @@
 ---
-
 - name: Set NVM_BIN when nvm is installed
   set_fact:
     NVM_BIN: "{{ nvm_dir }}/versions/{{ nvm.type }}/{{ nvm.ver }}/bin"
@@ -21,9 +20,9 @@
   changed_when: false
 
 - name: Set npm exec path
-  set_fact: 
+  set_fact:
     NPM_PATH: "{{ results_npm.stdout }}"
 
 - name: Set pm2 exec path
-  set_fact: 
+  set_fact:
     PM2_PATH: "{{ results_pm2.stdout }}"
