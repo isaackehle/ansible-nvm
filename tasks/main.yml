@@ -160,7 +160,7 @@
 
 - name: Enable Ports
   include_tasks: port_enable.yml
-  when: ((['port_enable'] | intersect(flags)) | length > 0) and do_gui is defined and do_gui == true
+  when: ((['port_enable'] | intersect(flags)) | length > 0) and do_gui is defined and do_gui
 
 - name: Clean artifact path
   file:

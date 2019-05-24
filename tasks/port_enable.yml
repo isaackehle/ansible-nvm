@@ -14,4 +14,4 @@
 - name: Give Safe User Permission To Use Ports 80/443
   shell: setcap cap_net_bind_service=+ep {{ NVM_BIN }}/node
   become: true
-  when: differs|bool == true
+  when: differs

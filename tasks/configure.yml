@@ -4,7 +4,7 @@
   fail: 
     msg: "Please ensure '{{ item.str }}' is set to a valid path"
   when:
-    - not item.path is defined or item.path == ""
+    - not item.path is defined or item.path | length == 0
   with_items:
     - { path: '{{ nvm_script }}', str: 'nvm_script' }
 
