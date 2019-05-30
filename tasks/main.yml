@@ -75,7 +75,7 @@
   become: true
   when:
     - ((['configure'] | intersect(flags)) | length > 0)
-    - npm_mod_list
+    - npm_mod_list | length > 0
     - PM2_PATH | length > 0
 
 - name: Install local packages
