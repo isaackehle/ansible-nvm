@@ -6,11 +6,7 @@
   failed_when: results_cap.rc > 1
   changed_when: false
 
-- name: Determine if the permissions are needed
-  set_fact:
-      differs: "{{ results_cap.stdout.find('differs') >= 1 }}"
-
 - name: Give Safe User Permission To Use Ports 80/443
   shell: setcap cap_net_bind_service=+ep {{ NVM_BIN }}/node
   become: true
-  when: differs
+  when: results_cap.stdout.find('differs') >= 1
