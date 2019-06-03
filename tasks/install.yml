@@ -111,11 +111,12 @@
   become: true
 
 - name: Clone nvm into place
-  shell: git clone https://github.com/creationix/nvm.git {{ nvm_install_dir }}
+  git:
+    repo: https://github.com/creationix/nvm.git
+    dest: "{{ nvm_install_dir }}"
   args:
     creates: "{{ nvm_install_dir }}/nvm.sh"
   become: true
-#  when: nvm_stat.stat.exists != true
 
 - name: Add /etc/profile.d/nvm.sh
   template:
