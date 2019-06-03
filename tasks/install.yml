@@ -1,14 +1,13 @@
 ---
-
 - name: Install required system packages
   apt:
-    name: [ 'build-essential', 'git', 'openssl', 'libssl-dev', 'curl' ]
+    name: ["build-essential", "git", "openssl", "libssl-dev", "curl"]
     state: present
   become: true
 
 - name: Remove node package, in lieu of nvm
   apt:
-    name: [ 'nodejs', 'node' ]
+    name: ["nodejs", "node"]
     state: absent
   become: true
 
@@ -33,8 +32,8 @@
     dest: /opt/pm2
     state: directory
     force: true
-    owner: '{{ generic_user.username }}'
-    group: '{{ generic_group }}'
+    owner: "{{ generic_user.username }}"
+    group: "{{ generic_group }}"
     mode: 0770
   become: true
   when: ((['install', 'configure', 'upgrade', 'autostart'] | intersect(flags)) | length > 0)
@@ -46,18 +45,18 @@
 
 - name: Link the global npm opt directory to the ansible user's home directory
   file:
-    src:  /opt/pm2
+    src: /opt/pm2
     dest: "/home/{{ ansible_user }}/.pm2"
     state: link
   when: ((['install', 'configure', 'upgrade', 'autostart'] | intersect(flags)) | length > 0)
 
 - name: Link the global npm opt directory to the generic_user's home directory
   file:
-    src:  /opt/pm2
+    src: /opt/pm2
     dest: "/home/{{ generic_user.username }}/.pm2"
     state: link
-    owner: '{{ generic_user.username }}'
-    group: '{{ generic_group }}'
+    owner: "{{ generic_user.username }}"
+    group: "{{ generic_group }}"
   become: true
   when: ((['install', 'configure', 'upgrade', 'autostart'] | intersect(flags)) | length > 0)
 
@@ -87,17 +86,17 @@
 
 - name: Link the global .nvm folder '{{ nvm_dir }}' to the ansible user's home directory
   file:
-    src:  "{{ nvm_dir }}"
+    src: "{{ nvm_dir }}"
     dest: "/home/{{ ansible_user }}/.nvm"
     state: link
 
 - name: Link the global .nvm folder '{{ nvm_dir }}' to the generic_user's home directory
   file:
-    src:  "{{ nvm_dir }}"
+    src: "{{ nvm_dir }}"
     dest: "/home/{{ generic_user.username }}/.nvm"
     state: link
-    owner: '{{ generic_user.username }}'
-    group: '{{ generic_user.username }}'
+    owner: "{{ generic_user.username }}"
+    group: "{{ generic_user.username }}"
   become: true
 
 - name: Add a block of required statements to /etc/environment
@@ -144,7 +143,7 @@
 
 - name: Link node executables
   file:
-    src:  "{{ nvm_dir }}/versions/{{ nvm.type }}/{{ nvm.ver }}/bin/{{ item }}"
+    src: "{{ nvm_dir }}/versions/{{ nvm.type }}/{{ nvm.ver }}/bin/{{ item }}"
     dest: "/usr/local/bin/{{ item }}"
     state: link
     force: true

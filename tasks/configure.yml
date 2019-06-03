@@ -1,15 +1,14 @@
 ---
-
 - name: Ensure Required Items
-  fail: 
+  fail:
     msg: "Please ensure '{{ item.str }}' is set to a valid path"
   when:
-    - not item.path is defined or item.path == ""
+    - not item.path is defined or item.path | length == 0
   with_items:
-    - { path: '{{ nvm_script }}', str: 'nvm_script' }
+    - { path: "{{ nvm_script }}", str: "nvm_script" }
 
 - name: Install the selected node version
-  shell:  |
+  shell: |
     . {{ nvm_script }}
     nvm install {{ nvm.ver }}
     nvm alias default {{ nvm.ver }}
@@ -24,4 +23,3 @@
     group: "{{ nvm_group }}"
     recurse: true
   become: true
-

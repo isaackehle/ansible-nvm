@@ -1,5 +1,4 @@
 ---
-  
 - name: Test Paths
   include_tasks: test_paths.yml
   when: ((['processes', 'upgrade', 'restart'] | intersect(flags)) | length > 0)
@@ -15,9 +14,9 @@
   shell: |
     . {{ nvm_script }}
     pm2 kill
-  become: true  
-  when: 
-    - PM2_PATH != ''
+  become: true
+  when:
+    - PM2_PATH | length > 0
     - ((['install', 'autostart'] | intersect(flags)) | length > 0)
 
 - name: Stop PM2 Process
@@ -28,7 +27,7 @@
   failed_when: res.rc > 1
   become: true
   when:
-    - PM2_PATH != ''
+    - PM2_PATH | length > 0
     - ((['processes'] | intersect(flags)) | length > 0)
 
 - name: Purge old versions
@@ -47,11 +46,11 @@
   when: ((['wipe'] | intersect(flags)) | length > 0)
 
 - name: Set NPM packages string
-  set_fact: 
+  set_fact:
     npm_pkg_list: "{{ npm_pkgs | join(' ') }}"
 
 - name: Set NPM modules string
-  set_fact: 
+  set_fact:
     npm_mod_list: "{{ pm2_mods | join(' ') }}"
 
 - name: Install NPM global packages
@@ -76,8 +75,8 @@
   become: true
   when:
     - ((['configure'] | intersect(flags)) | length > 0)
-    - npm_mod_list != ''
-    - PM2_PATH != ''
+    - npm_mod_list | length > 0
+    - PM2_PATH | length > 0
 
 - name: Install local packages
   shell: |
@@ -102,17 +101,6 @@
     chdir: "{{ remote_deploy_dir }}"
   when: ((['upgrade'] | intersect(flags)) | length > 0)
 
-# - name: Stop PM2 Process
-#   shell: |
-#     . {{ nvm_script }}
-#     pm2 stop all
-#   register: res
-#   failed_when: res.rc > 1
-#   when:
-#     - PM2_PATH != ''
-#     - ((['configure', 'restart', 'processes', 'upgrade'] | intersect(flags)) | length > 0)
-#   become: true
-
 - name: Start PM2 Process
   shell: |
     . {{ nvm_script }}
@@ -120,7 +108,7 @@
   args:
     chdir: "{{ remote_base_dir }}"
   when:
-    - PM2_PATH != ''
+    - PM2_PATH | length > 0
     - ((['configure', 'processes', 'upgrade', 'autostart'] | intersect(flags)) | length > 0)
 
 - name: Save PM2
@@ -141,8 +129,8 @@
 - name: Set permissions on /opt/pm2
   file:
     path: /opt/pm2
-    owner: '{{ generic_user.username }}' 
-    group: '{{ generic_group }}'
+    owner: "{{ generic_user.username }}"
+    group: "{{ generic_group }}"
     mode: 0770
     recurse: true
   become: true
@@ -155,16 +143,15 @@
   args:
     chdir: "{{ remote_base_dir }}"
   when:
-    - PM2_PATH != ''
+    - PM2_PATH | length > 0
     - ((['restart'] | intersect(flags)) | length > 0)
 
 - name: Enable Ports
   include_tasks: port_enable.yml
-  when: ((['port_enable'] | intersect(flags)) | length > 0) and do_gui is defined and do_gui == true
+  when: ((['port_enable'] | intersect(flags)) | length > 0) and do_gui is defined and do_gui
 
 - name: Clean artifact path
   file:
     state: absent
     path: "{{ remote_base_dir }}/core"
-  tags: ['all']
-  
+  tags: ["all"]
