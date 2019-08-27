@@ -115,8 +115,6 @@
     repo: https://github.com/creationix/nvm.git
     dest: "{{ nvm_install_dir }}"
     version: HEAD
-  args:
-    creates: "{{ nvm_install_dir }}/nvm.sh"
   become: true
 
 - name: Add /etc/profile.d/nvm.sh
