@@ -36,7 +36,7 @@
     group: "{{ generic_group }}"
     mode: 0770
   become: true
-  when: ((['install', 'configure', 'upgrade', 'autostart'] | intersect(flags)) | length > 0)
+  when: ((['install', 'configure', 'upgrade', 'processes'] | intersect(flags)) | length > 0)
 
 - name: Remove ansible user's home directory .pm2 folder
   file:
@@ -48,7 +48,7 @@
     src: /opt/pm2
     dest: "/home/{{ ansible_user }}/.pm2"
     state: link
-  when: ((['install', 'configure', 'upgrade', 'autostart'] | intersect(flags)) | length > 0)
+  when: ((['install', 'configure', 'upgrade', 'processes'] | intersect(flags)) | length > 0)
 
 - name: Link the global npm opt directory to the generic_user's home directory
   file:
@@ -58,7 +58,7 @@
     owner: "{{ generic_user.username }}"
     group: "{{ generic_group }}"
   become: true
-  when: ((['install', 'configure', 'upgrade', 'autostart'] | intersect(flags)) | length > 0)
+  when: ((['install', 'configure', 'upgrade', 'processes'] | intersect(flags)) | length > 0)
 
 - name: Make global directories
   file:

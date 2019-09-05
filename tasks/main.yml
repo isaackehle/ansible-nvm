@@ -8,16 +8,15 @@
 
 - name: Install
   include_tasks: install.yml
-  when: ((['install', 'autostart'] | intersect(flags)) | length > 0)
+  when: ((['install', 'processes'] | intersect(flags)) | length > 0)
 
 - name: Kill any PM2 processes
   shell: |
     . {{ nvm_script }}
     pm2 kill
-  become: true
   when:
     - PM2_PATH | length > 0
-    - ((['install', 'autostart'] | intersect(flags)) | length > 0)
+    - ((['install', 'processes'] | intersect(flags)) | length > 0)
 
 - name: Stop PM2 Process
   shell: |
@@ -25,7 +24,6 @@
     pm2 stop all
   register: res
   failed_when: res.rc > 1
-  become: true
   when:
     - PM2_PATH | length > 0
     - ((['processes'] | intersect(flags)) | length > 0)
@@ -101,7 +99,25 @@
     chdir: "{{ remote_deploy_dir }}"
   when: ((['upgrade'] | intersect(flags)) | length > 0)
 
-- name: Start PM2 Process
+- name: Kill all PM2 Processes
+  shell: |
+    . {{ nvm_script }}
+    pm2 kill
+  register: res
+  failed_when: res.rc > 1
+  when:
+    - PM2_PATH | length > 0
+    - ((['configure', 'processes'] | intersect(flags)) | length > 0)
+
+- name: PM2 Status
+  shell: |
+    . {{ nvm_script }}
+    pm2 status
+  when:
+    - PM2_PATH | length > 0
+    - ((['configure', 'processes'] | intersect(flags)) | length > 0)
+
+- name: Start PM2 Process from ecosystem.yml
   shell: |
     . {{ nvm_script }}
     pm2 start ecosystem.yml
@@ -109,13 +125,13 @@
     chdir: "{{ remote_base_dir }}"
   when:
     - PM2_PATH | length > 0
-    - ((['configure', 'processes', 'upgrade', 'autostart'] | intersect(flags)) | length > 0)
+    - ((['configure', 'processes', 'upgrade'] | intersect(flags)) | length > 0)
 
 - name: Save PM2
   shell: pm2 save
   args:
     chdir: "/home/{{ generic_user.username }}"
-  when: ((['processes', 'upgrade', 'autostart'] | intersect(flags)) | length > 0)
+  when: ((['processes', 'upgrade'] | intersect(flags)) | length > 0)
 
 - name: Configure PM2 Process Auto Start
   shell: |
@@ -124,7 +140,7 @@
   args:
     chdir: "/home/{{ generic_user.username }}"
   become: true
-  when: ((['processes', 'upgrade', 'autostart'] | intersect(flags)) | length > 0)
+  when: ((['processes', 'upgrade'] | intersect(flags)) | length > 0)
 
 - name: Set permissions on /opt/pm2
   file:
@@ -134,7 +150,7 @@
     mode: 0770
     recurse: true
   become: true
-  when: ((['processes', 'upgrade', 'autostart'] | intersect(flags)) | length > 0)
+  when: ((['processes', 'upgrade'] | intersect(flags)) | length > 0)
 
 - name: Restart PM2 Process
   shell: |
@@ -142,13 +158,18 @@
     pm2 restart all
   args:
     chdir: "{{ remote_base_dir }}"
+  register: res
+  failed_when: res.rc > 1
   when:
     - PM2_PATH | length > 0
-    - ((['restart'] | intersect(flags)) | length > 0)
+    - ((['restart', 'processes'] | intersect(flags)) | length > 0)
 
 - name: Enable Ports
   include_tasks: port_enable.yml
-  when: ((['port_enable'] | intersect(flags)) | length > 0) and enable_gui is defined and enable_gui
+  when: 
+    - ((['port_enable'] | intersect(flags)) | length > 0) 
+    - enable_gui is defined 
+    - enable_gui|bool == true
 
 - name: Clean artifact path
   file:
