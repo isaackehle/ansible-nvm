@@ -11,7 +11,7 @@
   when: ((['install', 'processes'] | intersect(flags)) | length > 0)
 
 - name: Kill any PM2 processes
-  shell: |
+  command: |
     . {{ nvm_script }}
     pm2 kill
   when:
@@ -19,7 +19,7 @@
     - ((['install', 'processes'] | intersect(flags)) | length > 0)
 
 - name: Stop PM2 Process
-  shell: |
+  command: |
     . {{ nvm_script }}
     pm2 stop all
   register: res
@@ -52,7 +52,7 @@
     npm_mod_list: "{{ pm2_mods | join(' ') }}"
 
 - name: Install NPM global packages
-  shell: npm install -g {{ npm_pkg_list }}
+  command: npm install -g {{ npm_pkg_list }}
   become: true
   when: ((['configure'] | intersect(flags)) | length > 0)
 
@@ -67,7 +67,7 @@
   when: ((['configure', 'upgrade'] | intersect(flags)) | length > 0)
 
 - name: Install PM2 modules
-  shell: pm2 install {{ npm_mod_list }}
+  command: pm2 install {{ npm_mod_list }}
   args:
     chdir: "{{ remote_deploy_dir }}"
   become: true
@@ -77,7 +77,7 @@
     - PM2_PATH | length > 0
 
 - name: Install local packages
-  shell: |
+  command: |
     . {{ nvm_script }}
     npm install
   args:
@@ -86,13 +86,13 @@
 
 - name: Upgrade NPM global packages
   become: true
-  shell: |
+  command: |
     . {{ nvm_script }}
     npm upgrade -g {{ npm_pkg_list }}
   when: ((['upgrade'] | intersect(flags)) | length > 0)
 
 - name: Force Install local packages
-  shell: |
+  command: |
     . {{ nvm_script }}
     npm install --force
   args:
@@ -100,7 +100,7 @@
   when: ((['upgrade'] | intersect(flags)) | length > 0)
 
 - name: Kill all PM2 Processes
-  shell: |
+  command: |
     . {{ nvm_script }}
     pm2 kill
   register: res
@@ -110,7 +110,7 @@
     - ((['configure', 'processes'] | intersect(flags)) | length > 0)
 
 - name: PM2 Status
-  shell: |
+  command: |
     . {{ nvm_script }}
     pm2 status
   when:
@@ -118,7 +118,7 @@
     - ((['configure', 'processes'] | intersect(flags)) | length > 0)
 
 - name: Start PM2 Process from ecosystem.yml
-  shell: |
+  command: |
     . {{ nvm_script }}
     pm2 start ecosystem.yml
   args:
@@ -128,13 +128,13 @@
     - ((['configure', 'processes', 'upgrade'] | intersect(flags)) | length > 0)
 
 - name: Save PM2
-  shell: pm2 save
+  command: pm2 save
   args:
     chdir: "/home/{{ generic_user.username }}"
   when: ((['processes', 'upgrade'] | intersect(flags)) | length > 0)
 
 - name: Configure PM2 Process Auto Start
-  shell: |
+  command: |
     . {{ nvm_script }}
     pm2 startup systemd -u '{{ generic_user.username }}' --hp '/home/{{ generic_user.username }}'
   args:
@@ -153,7 +153,7 @@
   when: ((['processes', 'upgrade'] | intersect(flags)) | length > 0)
 
 - name: Restart PM2 Process
-  shell: |
+  command: |
     . {{ nvm_script }}
     pm2 restart all
   args:
@@ -166,10 +166,10 @@
 
 - name: Enable Ports
   include_tasks: port_enable.yml
-  when: 
-    - ((['port_enable'] | intersect(flags)) | length > 0) 
-    - enable_gui is defined 
-    - enable_gui|bool == true
+  when:
+    - ((['port_enable'] | intersect(flags)) | length > 0)
+    - enable_gui is defined
+    - enable_gui
 
 - name: Clean artifact path
   file:

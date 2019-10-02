@@ -114,12 +114,12 @@
   git:
     repo: https://github.com/creationix/nvm.git
     dest: "{{ nvm_install_dir }}"
-    version: HEAD
+    version: v0.35.0
   become: true
 
 - name: Add /etc/profile.d/nvm.sh
   template:
-    src: ../templates/nvm.sh.j2
+    src: templates/nvm.sh.j2
     dest: /etc/profile.d/nvm.sh
     mode: 0644
     owner: root
