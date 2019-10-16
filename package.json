@@ -1,6 +1,6 @@
 {
   "name": "ansible-nvm",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "Global NVM Installation and Control for a node server",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
