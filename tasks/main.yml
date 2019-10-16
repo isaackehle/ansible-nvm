@@ -52,7 +52,7 @@
     npm_mod_list: "{{ pm2_mods | join(' ') }}"
 
 - name: Install NPM global packages
-  shell: npm install -g {{ npm_pkg_list }}
+  command: npm install -g {{ npm_pkg_list }}
   become: true
   when: ((['configure'] | intersect(flags)) | length > 0)
 
@@ -67,7 +67,7 @@
   when: ((['configure', 'upgrade'] | intersect(flags)) | length > 0)
 
 - name: Install PM2 modules
-  shell: pm2 install {{ npm_mod_list }}
+  command: pm2 install {{ npm_mod_list }}
   args:
     chdir: "{{ remote_deploy_dir }}"
   become: true
@@ -128,7 +128,9 @@
     - ((['configure', 'processes', 'upgrade'] | intersect(flags)) | length > 0)
 
 - name: Save PM2
-  shell: pm2 save
+  shell: |
+    . {{ nvm_script }}
+    pm2 save
   args:
     chdir: "/home/{{ generic_user.username }}"
   when: ((['processes', 'upgrade'] | intersect(flags)) | length > 0)
