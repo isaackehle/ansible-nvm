@@ -1,7 +1,7 @@
 ---
 - name: Get current version
   become: true
-  command: |
+  shell: |
     . {{ nvm_script }}
     nvm ls current --no-colors
   register: res_curr
@@ -10,7 +10,7 @@
 
 - name: Get currently installed list of versions
   become: true
-  command: |
+  shell: |
     . {{ nvm_script }}
     nvm ls {{ nvm.type }} --no-colors
   register: res_vers
@@ -34,7 +34,7 @@
 
 - name: Remove old version(s)
   become: true
-  command: |
+  shell: |
     . {{ nvm_script }}
     nvm uninstall {{ item }}
   failed_when: false

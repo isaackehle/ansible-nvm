@@ -8,7 +8,7 @@
     - { path: "{{ nvm_script }}", str: "nvm_script" }
 
 - name: Install the selected node version
-  command: |
+  shell: |
     . {{ nvm_script }}
     nvm install {{ nvm.ver }}
     nvm alias default {{ nvm.ver }}
