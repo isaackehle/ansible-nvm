@@ -28,9 +28,16 @@
   with_items: "{{ res_vers.stdout_lines }}"
   when: res_vers is defined and res_vers.stdout_lines is defined
 
-- name: Remove current version from version list
-  set_fact:
-    versions: "{{ versions | union([curr_ver, 'v'+curr_ver]) | difference([curr_ver, 'v'+curr_ver]) }}"
+# - name: Remove current version from version list
+#   set_fact:
+#     versions: "{{ versions | union([curr_ver, 'v'+curr_ver]) | difference([curr_ver, 'v'+curr_ver]) }}"
+
+- name: Set the node version to system
+  shell: |
+    . {{ nvm_script }}
+    nvm alias default system
+  become: true
+  when: true
 
 - name: Remove old version(s)
   become: true
@@ -40,3 +47,12 @@
   failed_when: false
   with_items: "{{ versions }}"
   when: true
+
+- name: Unlink the executable files for all users
+  file:
+    dest: "/usr/local/bin/{{ item }}"
+    state: absent
+    force: true
+  with_items: "{{ apt_pkgs }}"
+  become: true
+  when: ((['configure', 'upgrade'] | intersect(flags)) | length > 0)

@@ -15,7 +15,7 @@ vars:
   flags:
     - init            # Downloads the nvm project and installs it globally
     - configure       # Runs the configure scripts to install and change the default type
-    - wipe            # Remove local packages folder
+    - clean           # Remove local packages folder and nvm
     - packages        # Install global and local packages
     - upgrade         # Upgrade global and local packages
     - restart         # Restart the node process(es)
@@ -43,7 +43,7 @@ vars:
 
   roles:
     - { role: pgkehle.nvm, flags: ['init'] }
-    - { role: pgkehle.nvm, flags: ['wipe'] }
+    - { role: pgkehle.nvm, flags: ['clean'] }
     - { role: pgkehle.nvm, flags: ['configure'] }
     - { role: pgkehle.nvm, flags: ['upgrade'] }
     - { role: pgkehle.nvm, flags: ['processes'] }

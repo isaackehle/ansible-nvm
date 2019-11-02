@@ -1,12 +1,12 @@
 ---
 - name: Test User Permissions To Use Ports 80/443
-  command: setcap -v cap_net_bind_service=+ep {{ NVM_BIN }}/node
+  shell: setcap -v cap_net_bind_service=+ep {{ NVM_BIN }}/node
   become: true
   register: results_cap
   failed_when: results_cap.rc > 1
   changed_when: false
 
 - name: Give Safe User Permission To Use Ports 80/443
-  command: setcap cap_net_bind_service=+ep {{ NVM_BIN }}/node
+  shell: setcap cap_net_bind_service=+ep {{ NVM_BIN }}/node
   become: true
   when: results_cap.stdout.find('differs') >= 1
