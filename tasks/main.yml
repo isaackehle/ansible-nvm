@@ -28,20 +28,20 @@
     - PM2_PATH | length > 0
     - ((['processes'] | intersect(flags)) | length > 0)
 
-- name: Purge old versions
-  include_tasks: purge.yml
+- name: Clean NVM
+  include_tasks: clean.yml
   when:
-    - ((['install', 'purge', 'configure'] | intersect(flags)) | length > 0)
+    - ((['install', 'clean', 'configure'] | intersect(flags)) | length > 0)
 
 - name: Configure
   include_tasks: configure.yml
   when: ((['configure'] | intersect(flags)) | length > 0)
 
-- name: Wipe NPM local packages
+- name: Clean NPM local packages
   file:
     dest: "{{ remote_deploy_dir }}/node_modules"
     state: absent
-  when: ((['wipe'] | intersect(flags)) | length > 0)
+  when: ((['clean'] | intersect(flags)) | length > 0)
 
 - name: Set NPM packages string
   set_fact:
@@ -52,7 +52,7 @@
     npm_mod_list: "{{ pm2_mods | join(' ') }}"
 
 - name: Install NPM global packages
-  command: npm install -g {{ npm_pkg_list }}
+  shell: npm install -g {{ npm_pkg_list }}
   become: true
   when: ((['configure'] | intersect(flags)) | length > 0)
 
@@ -67,7 +67,7 @@
   when: ((['configure', 'upgrade'] | intersect(flags)) | length > 0)
 
 - name: Install PM2 modules
-  command: pm2 install {{ npm_mod_list }}
+  shell: pm2 install {{ npm_mod_list }}
   args:
     chdir: "{{ remote_deploy_dir }}"
   become: true
@@ -178,3 +178,16 @@
     state: absent
     path: "{{ remote_base_dir }}/core"
   tags: ["all"]
+
+- name: Link nvm
+  shell: |
+    . {{ nvm_script }}
+    npm link
+  args:
+    chdir: "{{ remote_deploy_dir }}"
+  when: ((['configure', 'upgrade', 'install'] | intersect(flags)) | length > 0)
+
+- name: Restart the instance
+  include_role:
+    name: pgkehle.restart
+  when: ((['upgrade', 'install'] | intersect(flags)) | length > 0)

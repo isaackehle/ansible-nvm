@@ -6,14 +6,14 @@
   when: lookup('env', 'NVM_DIR') is defined
 
 - name: Get npm path
-  command: which npm
+  shell: which npm
   become: true
   register: results_npm
   failed_when: results_npm.rc > 1
   changed_when: false
 
 - name: Get pm2 path
-  command: which pm2
+  shell: which pm2
   become: true
   register: results_pm2
   failed_when: results_pm2.rc > 1
