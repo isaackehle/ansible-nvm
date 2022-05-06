@@ -1,6 +1,6 @@
 {
   "name": "ansible-nvm",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "Global NVM Installation and Control for a node server",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pgkehle/ansible-nvm.git"
+    "url": "git+https://github.com/isaackehle/ansible-nvm.git"
   },
-  "author": "Paul Kehle (pgkehle@gmail.com)",
+  "author": "Isaac Kehle (isaac@kehle.org)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/pgkehle/ansible-nvm/issues"
+    "url": "https://github.com/isaackehle/ansible-nvm/issues"
   },
-  "homepage": "https://github.com/pgkehle/ansible-nvm#readme",
+  "homepage": "https://github.com/isaackehle/ansible-nvm#readme",
   "main": "tasks/main.yml",
   "keywords": [
     "ansible"

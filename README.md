@@ -2,7 +2,7 @@
 
 Global NVM Installation and Control for a node server
 
-Available on Ansible Galaxy: [pgkehle.nvm](https://galaxy.ansible.com/pgkehle/nvm)
+Available on Ansible Galaxy: [isaackehle.nvm](https://galaxy.ansible.com/isaackehle/nvm)
 
 Two directories created in `/usr/local`, `nvm_dir` and `node_dir` are set with group ownership of `nvm`. This group is created and
 assigned to the ansible user.
@@ -42,12 +42,12 @@ vars:
       ver:                "10.8.0"
 
   roles:
-    - { role: pgkehle.nvm, flags: ['init'] }
-    - { role: pgkehle.nvm, flags: ['clean'] }
-    - { role: pgkehle.nvm, flags: ['configure'] }
-    - { role: pgkehle.nvm, flags: ['upgrade'] }
-    - { role: pgkehle.nvm, flags: ['processes'] }
-    - { role: pgkehle.nvm, flags: ['restart'] }
+    - { role: isaackehle.nvm, flags: ['init'] }
+    - { role: isaackehle.nvm, flags: ['clean'] }
+    - { role: isaackehle.nvm, flags: ['configure'] }
+    - { role: isaackehle.nvm, flags: ['upgrade'] }
+    - { role: isaackehle.nvm, flags: ['processes'] }
+    - { role: isaackehle.nvm, flags: ['restart'] }
 ```
 
 ```bash
@@ -75,5 +75,5 @@ MIT
 
 ## Author Information
 
-Paul Kehle  
-@pgkehle ([twitter](https://twitter.com/pgkehle), [github](https://github.com/pgkehle), [linkedin](https://www.linkedin.com/in/pgkehle))
+Isaac Kehle
+@isaackehle ([twitter](https://twitter.com/isaackehle), [github](https://github.com/isaackehle), [linkedin](https://www.linkedin.com/in/isaackehle))

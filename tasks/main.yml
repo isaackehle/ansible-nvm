@@ -189,5 +189,5 @@
 
 - name: Restart the instance
   include_role:
-    name: pgkehle.restart
+    name: isaackehle.restart
   when: ((['upgrade', 'install'] | intersect(flags)) | length > 0)
